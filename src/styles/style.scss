@@ -1,0 +1,68 @@
+$light-blue: rgb(102, 217, 255);
+$light-green: rgb(179, 255, 153);
+$light-rose: rgb(249,185,213);
+$light-orange: rgb(255,192,126);
+$light-yellow: rgb(255,239,126);
+$light-gray: rgb(175, 172, 177);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.content {
+  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .keyboard {
+    width: 100%;
+    height: auto;
+    text-align: center;
+    &__key {
+      width: 6.6%;
+      height: 60px;
+      margin: 1px;
+      border: 1px solid #000;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+
+      &--wide {
+        width: 9%;
+      }
+
+      &--extrawide{
+        width: 35%;
+      }
+
+      &--blue {
+        background: $light-blue;
+      }
+
+      &--green {
+        background: $light-green;
+      }
+
+      &--rose {
+        background: $light-rose;
+      }
+
+      &--orange {
+        background: $light-orange;
+      }
+
+      &--yellow {
+        background: $light-yellow;
+      }
+
+      &--gray {
+        background: $light-gray;
+      }
+    }
+  }  
+}

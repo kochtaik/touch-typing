@@ -3,10 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/public/bundle.css">
   <title>Document</title>
 </head>
 <body>
-  
+  <main class="content">
+    <header class="content__header header"></header>
+    <section class="content__text text">
+      <div id="text" class="text__content">
+        <!-- here the textes will be displayed -->
+      </div>
+    </section>
+    <div class="content__game-data">
+      <!-- Speed, time... -->
+    </div>
+    <section class="content__input input">
+      <textarea name="textinput" id="textinput" cols="30" rows="10"></textarea>
+    </section>
+    <section class="content__keyboard  keyboard" id="keyboard">
+      <!-- сюда генерируется клавиатура -->
+    </section>
+  </main>
 </body>
 <script src="public/bundle.js"></script>
 </html>

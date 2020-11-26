@@ -1,3 +1,2 @@
 import '../styles/style.scss';
-
-console.log('hello');
+import './facade';
