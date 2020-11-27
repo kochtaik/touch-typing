@@ -4,21 +4,31 @@ class Keyboard {
     this.elements = {
       keyboardField: document.querySelector('#keyboard'),
     }
-    this.HTMLCodes = {
-      backspace: '&larr;',
-      capsLock: '&uarr;',
-      tab: '&#8633;',
+
+    this.data = {
+      HTMLCodes: {
+        backspace: '&larr;',
+        capsLock: '&uarr;',
+        tab: '&#8633;',
+      },
+      keyCodes: ["Backquote", "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9","Digit0", "Minus", "Equal", "Backspace",
+        "Tab", "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight",
+        "CapsLock", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon", "Quote", "Backslash",
+        "ShiftLeft", "KeyZ", "KeyX", "KeyC", "KeyV", "KeyB", "KeyN", "KeyM", "Comma", "Period", "Slash", "ShiftRight",
+        "Space"],
+      englishLayout: ['`', '1', '2', '3', '4','5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
+      'tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
+      'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
+      'shiftL', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'shiftR',
+      'space'],
     }
   }
 
   generateKeyboard() {
     const fragment = document.createDocumentFragment();
-    const keys = ['`', '1', '2', '3', '4','5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
-    'tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
-    'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
-    'shiftL', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'shiftR',
-    'space'];
+    const keys = this.data.englishLayout;
     const marginElements = ['backspace', ']', '#', 'ShiftR'];
+    const isMargin = (el) => marginElements.indexOf(el) !== - 1;
 
     keys.forEach((char) => {
       const key = document.createElement('div');
@@ -28,19 +38,19 @@ class Keyboard {
 
       switch(char) {
         case "backspace": 
-          characterWrapper.textContent = this.HTMLCodes.backspace;
+          characterWrapper.textContent = this.data.HTMLCodes.backspace;
           key.style.width = '9%';
           key.dataset.type = 'backspace';
           break;
 
         case "tab": 
-          characterWrapper.textContent = this.HTMLCodes.tab;
+          characterWrapper.textContent = this.data.HTMLCodes.tab;
           key.style.width = '9%';
           key.dataset.type = 'tab';
           break;
 
         case "capsLock": 
-          characterWrapper.textContent = this.HTMLCodes.capsLock;
+          characterWrapper.textContent = this.data.HTMLCodes.capsLock;
           key.style.width = '10%';
           key.dataset.type = 'capsLock';
           break;
@@ -68,13 +78,17 @@ class Keyboard {
           key.dataset.type = char.toLowerCase();
           break;
       }
-      const isMargin = (el) => marginElements.indexOf(el) !== - 1;
+
+      const index = keys.indexOf(char);
+      key.dataset.code = this.data.keyCodes[index];
       key.appendChild(characterWrapper);
       this.colorKey(key)
       fragment.appendChild(key);
       if (isMargin(char)) fragment.appendChild(document.createElement('br'));
     });
+
     this.elements.keyboardField.appendChild(fragment);
+    this.elements.keyboardKeys = document.querySelectorAll('.keyboard__key');
   }
 
   colorKey(key) {
@@ -111,6 +125,20 @@ class Keyboard {
       const { values, className } = group;
       if (values.includes(keyValue)) key.classList.add(className);
     }
+  }
+
+  highlightKey(keyCode) {
+    const pressedKey = Array.from(this.elements.keyboardKeys)
+      .find((keyElem) => keyElem.dataset.code === keyCode);
+    if (pressedKey === undefined) return;
+    pressedKey.classList.add('keyboard__key--pressed');
+  }
+
+  unhighlightKey(keyCode) {
+    const pressedKey = Array.from(this.elements.keyboardKeys)
+      .find((keyElem) => keyElem.dataset.code === keyCode);
+    if (pressedKey === undefined) return;
+    pressedKey.classList.remove('keyboard__key--pressed');
   }
 }
 

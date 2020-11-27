@@ -31,13 +31,14 @@ $light-gray: rgb(175, 172, 177);
       align-items: center;
       justify-content: center;
       user-select: none;
-
-      &--wide {
-        width: 9%;
-      }
+      transition-duration: 0.1;
 
       &--extrawide{
         width: 35%;
+      }
+
+      &--pressed {
+        transform: scale(0.95);
       }
 
       &--blue {
