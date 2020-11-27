@@ -1,6 +1,7 @@
 class Keyboard {
   constructor(lang) {
     this.lang = lang;
+    // this.init = this.init.bind(this);
     this.elements = {
       keyboardField: document.querySelector('#keyboard'),
     }
@@ -21,13 +22,22 @@ class Keyboard {
       'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
       'shiftL', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'shiftR',
       'space'],
+      russianLayout: ["ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "backspace",
+      'tab', "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ",
+      "capsLock", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "\\",
+      "shiftL", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".", "shiftR",
+      "space"],
     }
   }
 
+  // init() {
+
+  // }
+
   generateKeyboard() {
     const fragment = document.createDocumentFragment();
-    const keys = this.data.englishLayout;
-    const marginElements = ['backspace', ']', '#', 'ShiftR'];
+    const keys = this.lang === 'en' ? this.data.englishLayout : this.data.russianLayout;
+    const marginElements = this.lang === 'en' ? ['backspace', ']', '#', 'ShiftR'] : ['backspace', 'ъ', '\\', 'shiftR'];
     const isMargin = (el) => marginElements.indexOf(el) !== - 1;
 
     keys.forEach((char) => {
@@ -94,7 +104,7 @@ class Keyboard {
   colorKey(key) {
     const fingerZones = {
       mericularFingers: {
-        values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL', 'shiftR', 'q', 'a', 'z', 'p', '0', '-', '=', '[', ']', '\'', '/', ';', 'backspace', '#'],
+        values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL', 'shiftR', 'q', 'й', 'a', 'ф',  'я', 'z', 'з', 'p', '0', '-', '=',  'х',  'ъ', '[', ']', '\'',  '\\', '/', 'ё', ';', 'backspace', '#'],
         className: 'keyboard__key--blue',
       },
       ringFingers: {
@@ -139,6 +149,12 @@ class Keyboard {
       .find((keyElem) => keyElem.dataset.code === keyCode);
     if (pressedKey === undefined) return;
     pressedKey.classList.remove('keyboard__key--pressed');
+  }
+
+  toggleLanguage() {
+    this.lang === 'en' ? this.lang = 'ru' : this.lang = 'en';
+    this.elements.keyboardField.innerHTML = '';
+    this.generateKeyboard();
   }
 }
 
