@@ -11,6 +11,6 @@ window.addEventListener('DOMContentLoaded', () => {
     keyboard.unhighlightKey(e.code);
   });
   // keyboard.init();
-  const text = new Generator('en');
+  const text = new Generator('ru');
   text.getText();
 });

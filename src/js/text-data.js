@@ -7,43 +7,39 @@ class Generator {
   }
 
   getText() {
-    const getEnglishText = () => {
-      const url = 'https://litipsum.com/api/1/json';
-      fetch(url).then((data) => data.json())
-        .then((obj) => {
-          this.elements.textField.textContent = this.parseText(obj.text);
-        });
-    };
-
-    const getRussianText = () => {
-      console.log('here a russian text will be displayed')
-    }
-    return this.lang === 'en' ? getEnglishText() : getRussianText();
+    const url = this.lang === 'en' ? 'https://litipsum.com/api/1/json'
+      : 'https://fish-text.ru/get?&type=sentence&number=3';
+    fetch(url).then((data) => data.json())
+      .then((obj) => {
+        const { textField } = this.elements;
+        if (this.lang === 'en') {
+          textField.textContent = Generator.parseText(obj.text);
+        } else textField.textContent = obj.text;
+      });
   }
 
-  parseText(textArray) {
+  static parseText(textArray) {
     const splittedInWords = textArray.join('').replace('--', ' - ').split(' ');
-    return this.handleDots(splittedInWords);
+    return Generator.handleDots(splittedInWords);
   }
 
-  handleDots(text) {
-    const exclude = /(Dr|Mrs?)\./;
+  static handleDots(text) {
+    const exclude = /([A-Z]|St|Dr|Mrs?)\./;
     let sentence = '';
     let sentenceCounter = 0;
     const result = [];
-    for (const value of text) {
-      if (sentenceCounter >= 5) break;
-      if (value.includes('.')) {
-        if (exclude.test(value)) sentence += `${value} `;
+    text.forEach((word) => {
+      if (sentenceCounter >= 5) return;
+      if (word.includes('.')) {
+        if (exclude.test(word)) sentence += `${word} `;
         else {
-          sentence += `${value} `;
+          sentence += `${word} `;
           result.push(sentence);
           sentenceCounter += 1;
           sentence = '';
         }
-      } else sentence += `${value} `;
-    }
-    console.log(sentenceCounter)
+      } else sentence += `${word} `;
+    });
     return result.join('');
   }
 }

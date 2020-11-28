@@ -92,7 +92,7 @@ class Keyboard {
       const index = keys.indexOf(char);
       key.dataset.code = this.data.keyCodes[index];
       key.appendChild(characterWrapper);
-      this.colorKey(key);
+      Keyboard.colorKey(key);
       fragment.appendChild(key);
       if (isMargin(char)) fragment.appendChild(document.createElement('br'));
     });
@@ -101,7 +101,7 @@ class Keyboard {
     this.elements.keyboardKeys = document.querySelectorAll('.keyboard__key');
   }
 
-  colorKey(key) {
+  static colorKey(key) {
     const fingerZones = {
       mericularFingers: {
         values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL', 'shiftR', 'q', 'й', 'a', 'ф', 'я', 'z', 'з', 'p', '0', '-', '=', 'х', 'ъ', '[', ']', '\'', '\\', '/', 'ё', ';', 'backspace', '#'],
