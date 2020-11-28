@@ -4,7 +4,7 @@ class Keyboard {
     // this.init = this.init.bind(this);
     this.elements = {
       keyboardField: document.querySelector('#keyboard'),
-    }
+    };
 
     this.data = {
       HTMLCodes: {
@@ -12,22 +12,22 @@ class Keyboard {
         capsLock: '&uarr;',
         tab: '&#8633;',
       },
-      keyCodes: ["Backquote", "Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9","Digit0", "Minus", "Equal", "Backspace",
-        "Tab", "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight",
-        "CapsLock", "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon", "Quote", "Backslash",
-        "ShiftLeft", "KeyZ", "KeyX", "KeyC", "KeyV", "KeyB", "KeyN", "KeyM", "Comma", "Period", "Slash", "ShiftRight",
-        "Space"],
-      englishLayout: ['`', '1', '2', '3', '4','5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
-      'tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
-      'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
-      'shiftL', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'shiftR',
-      'space'],
-      russianLayout: ["ё", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "backspace",
-      'tab', "й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ",
-      "capsLock", "ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э", "\\",
-      "shiftL", "я", "ч", "с", "м", "и", "т", "ь", "б", "ю", ".", "shiftR",
-      "space"],
-    }
+      keyCodes: ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace',
+        'Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight',
+        'CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Backslash',
+        'ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ShiftRight',
+        'Space'],
+      englishLayout: ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
+        'tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
+        'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
+        'shiftL', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'shiftR',
+        'space'],
+      russianLayout: ['ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
+        'tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ',
+        'capsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', '\\',
+        'shiftL', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', 'shiftR',
+        'space'],
+    };
   }
 
   // init() {
@@ -38,7 +38,7 @@ class Keyboard {
     const fragment = document.createDocumentFragment();
     const keys = this.lang === 'en' ? this.data.englishLayout : this.data.russianLayout;
     const marginElements = this.lang === 'en' ? ['backspace', ']', '#', 'ShiftR'] : ['backspace', 'ъ', '\\', 'shiftR'];
-    const isMargin = (el) => marginElements.indexOf(el) !== - 1;
+    const isMargin = (el) => marginElements.indexOf(el) !== -1;
 
     keys.forEach((char) => {
       const key = document.createElement('div');
@@ -46,44 +46,44 @@ class Keyboard {
       const characterWrapper = document.createElement('span');
       characterWrapper.classList.add('keyboard__key__char');
 
-      switch(char) {
-        case "backspace": 
+      switch (char) {
+        case 'backspace':
           characterWrapper.textContent = this.data.HTMLCodes.backspace;
           key.style.width = '9%';
           key.dataset.type = 'backspace';
           break;
 
-        case "tab": 
+        case 'tab':
           characterWrapper.textContent = this.data.HTMLCodes.tab;
           key.style.width = '9%';
           key.dataset.type = 'tab';
           break;
 
-        case "capsLock": 
+        case 'capsLock':
           characterWrapper.textContent = this.data.HTMLCodes.capsLock;
           key.style.width = '10%';
           key.dataset.type = 'capsLock';
           break;
 
-        case "shiftL":
+        case 'shiftL':
           characterWrapper.textContent = '&larr';
           key.style.width = '12%';
           key.dataset.type = 'shiftL';
           break;
 
-        case "shiftR":
+        case 'shiftR':
           characterWrapper.textContent = '&larr';
           key.dataset.type = 'shiftR';
           key.style.width = '12%';
           break;
 
-        case "space": 
+        case 'space':
           characterWrapper.textContent = '';
           key.classList.add('keyboard__key--extrawide');
           key.dataset.type = 'space';
           break;
 
-        default: 
+        default:
           characterWrapper.textContent = char.toLowerCase();
           key.dataset.type = char.toLowerCase();
           break;
@@ -92,7 +92,7 @@ class Keyboard {
       const index = keys.indexOf(char);
       key.dataset.code = this.data.keyCodes[index];
       key.appendChild(characterWrapper);
-      this.colorKey(key)
+      this.colorKey(key);
       fragment.appendChild(key);
       if (isMargin(char)) fragment.appendChild(document.createElement('br'));
     });
@@ -104,7 +104,7 @@ class Keyboard {
   colorKey(key) {
     const fingerZones = {
       mericularFingers: {
-        values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL', 'shiftR', 'q', 'й', 'a', 'ф',  'я', 'z', 'з', 'p', '0', '-', '=',  'х',  'ъ', '[', ']', '\'',  '\\', '/', 'ё', ';', 'backspace', '#'],
+        values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL', 'shiftR', 'q', 'й', 'a', 'ф', 'я', 'z', 'з', 'p', '0', '-', '=', 'х', 'ъ', '[', ']', '\'', '\\', '/', 'ё', ';', 'backspace', '#'],
         className: 'keyboard__key--blue',
       },
       ringFingers: {
@@ -112,7 +112,7 @@ class Keyboard {
         className: 'keyboard__key--green',
       },
       middleFingers: {
-        values: ['e','d', 'c', '4', ',', '8', 'i', 'k'],
+        values: ['e', 'd', 'c', '4', ',', '8', 'i', 'k'],
         className: 'keyboard__key--rose',
       },
       leftPointerFinger: {

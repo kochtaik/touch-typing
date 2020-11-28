@@ -1,4 +1,5 @@
-import Keyboard from './module';
+import Keyboard from './keyboard';
+import Generator from './text-data';
 
 window.addEventListener('DOMContentLoaded', () => {
   const keyboard = new Keyboard('en');
@@ -9,5 +10,7 @@ window.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('keyup', (e) => {
     keyboard.unhighlightKey(e.code);
   });
-  keyboard.init();
+  // keyboard.init();
+  const text = new Generator('en');
+  text.getText();
 });
