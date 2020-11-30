@@ -8,7 +8,14 @@
 </head>
 <body>
   <main class="content">
-    <header class="content__header header"></header>
+    <header class="content__header header">
+      <button class="header__start-btn" id="start">Start game</button>
+      <select name="language" id="language">
+        <option selected disabled value="">Choose language to type in</option>
+        <option value="ru">Russian</option>
+        <option value="en">English</option>
+      </select>
+    </header>
     <section class="content__text text">
       <div id="text" class="text__content">
         <!-- here the textes will be displayed -->

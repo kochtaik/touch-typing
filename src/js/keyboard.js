@@ -1,7 +1,8 @@
 class Keyboard {
   constructor(lang) {
     this.lang = lang;
-    // this.init = this.init.bind(this);
+    this.highlightKey = this.highlightKey.bind(this);
+    this.unhighlightKey = this.unhighlightKey.bind(this);
     this.elements = {
       keyboardField: document.querySelector('#keyboard'),
     };
@@ -30,13 +31,24 @@ class Keyboard {
     };
   }
 
-  // init() {
-
-  // }
+  init() {
+    const keys = document.querySelectorAll('.keyboard__key'); // refactor
+    if (keys.length !== 0) {
+      this.elements.keyboardField.innerHTML = '';
+    }
+    this.generateKeyboard();
+    document.addEventListener('keydown', (e) => {
+      this.highlightKey(e.code);
+    });
+    document.addEventListener('keyup', (e) => {
+      this.unhighlightKey(e.code);
+    });
+  }
 
   generateKeyboard() {
     const fragment = document.createDocumentFragment();
     const keys = this.lang === 'en' ? this.data.englishLayout : this.data.russianLayout;
+    console.log('this.lang', this.lang)
     const marginElements = this.lang === 'en' ? ['backspace', ']', '#', 'ShiftR'] : ['backspace', 'ъ', '\\', 'shiftR'];
     const isMargin = (el) => marginElements.indexOf(el) !== -1;
 
@@ -104,11 +116,15 @@ class Keyboard {
   static colorKey(key) {
     const fingerZones = {
       mericularFingers: {
-        values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL', 'shiftR', 'q', 'й', 'a', 'ф', 'я', 'z', 'з', 'p', '0', '-', '=', 'х', 'ъ', '[', ']', '\'', '\\', '/', 'ё', ';', 'backspace', '#'],
+        values: ['`', '1', '2', 'tab', 'capsLock', 'shiftL',
+          'shiftR', 'q', 'й', 'a', 'ф', 'я', 'z', 'з', 'p', '0',
+          '-', '=', 'х', 'ъ', '[', ']', '\'', '\\', '/', 'ё', ';',
+          'backspace', '#', 'ж', 'э'],
         className: 'keyboard__key--blue',
       },
       ringFingers: {
-        values: ['w', 's', 'x', 'o', 'l', '.', '9', '3'],
+        values: ['w', 's', 'x', 'o', 'l', '.', '9', '3',
+          'ц', 'ы', 'ч', 'щ', 'д', 'ю'],
         className: 'keyboard__key--green',
       },
       middleFingers: {
@@ -116,11 +132,13 @@ class Keyboard {
         className: 'keyboard__key--rose',
       },
       leftPointerFinger: {
-        values: ['5', '6', 'r', 'f', 'v', 't', 'g', 'b'],
+        values: ['5', '6', 'r', 'f', 'v', 't', 'g', 'b',
+          'к', 'а', 'м', 'е', 'п', 'и'],
         className: 'keyboard__key--orange',
       },
       rightPointerFinger: {
-        values: ['7', 'y', 'h', 'n', 'u', 'j', 'm'],
+        values: ['7', 'y', 'h', 'n', 'u', 'j', 'm',
+          'н', 'р', 'т', 'г', 'о', 'ь'],
         className: 'keyboard__key--yellow',
       },
       thumbFinger: {
@@ -149,12 +167,6 @@ class Keyboard {
       .find((keyElem) => keyElem.dataset.code === keyCode);
     if (pressedKey === undefined) return;
     pressedKey.classList.remove('keyboard__key--pressed');
-  }
-
-  toggleLanguage() {
-    this.lang === 'en' ? this.lang = 'ru' : this.lang = 'en';
-    this.elements.keyboardField.innerHTML = '';
-    this.generateKeyboard();
   }
 }
 
