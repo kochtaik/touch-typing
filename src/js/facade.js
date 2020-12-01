@@ -2,6 +2,7 @@
 /* eslint-disable no-console */
 import Keyboard from './keyboard';
 import Generator from './text-data';
+import Game from './game';
 
 class Facade {
   constructor(lang, mode = 'default') {
@@ -16,9 +17,14 @@ class Facade {
   init() {
     const { lang } = this;
     const text = new Generator(lang);
-    text.getText();
+    text.pullText();
     const keyboard = new Keyboard(lang);
     keyboard.init();
+    setTimeout(() => {
+      const text = document.querySelector('#text').textContent;
+      const game = new Game(text);
+      game.start();
+    }, 1000);
   }
 
   configureInterface() {
@@ -37,6 +43,5 @@ class Facade {
 
 document.addEventListener('DOMContentLoaded', () => {
   const facade = new Facade('en');
-  facade.init();
   facade.configureInterface();
 });

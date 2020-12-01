@@ -1,8 +1,8 @@
 $light-blue: rgb(102, 217, 255);
 $light-green: rgb(179, 255, 153);
-$light-rose: rgb(249,185,213);
-$light-orange: rgb(255,192,126);
-$light-yellow: rgb(255,239,126);
+$light-rose: rgb(249, 185, 213);
+$light-orange: rgb(255, 192, 126);
+$light-yellow: rgb(255, 239, 126);
 $light-gray: rgb(175, 172, 177);
 
 * {
@@ -16,6 +16,16 @@ $light-gray: rgb(175, 172, 177);
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .text__content {
+    width: 90%;
+    font-size: 18px;
+    text-align: center;
+
+    &--char-highlighted {
+      background: $light-blue;
+    }
+  }
 
   .keyboard {
     width: 100%;
@@ -33,7 +43,7 @@ $light-gray: rgb(175, 172, 177);
       user-select: none;
       transition-duration: 0.1;
 
-      &--extrawide{
+      &--extrawide {
         width: 35%;
       }
 
@@ -65,5 +75,5 @@ $light-gray: rgb(175, 172, 177);
         background: $light-gray;
       }
     }
-  }  
+  }
 }

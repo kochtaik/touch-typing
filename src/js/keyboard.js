@@ -48,7 +48,6 @@ class Keyboard {
   generateKeyboard() {
     const fragment = document.createDocumentFragment();
     const keys = this.lang === 'en' ? this.data.englishLayout : this.data.russianLayout;
-    console.log('this.lang', this.lang)
     const marginElements = this.lang === 'en' ? ['backspace', ']', '#', 'ShiftR'] : ['backspace', 'ъ', '\\', 'shiftR'];
     const isMargin = (el) => marginElements.indexOf(el) !== -1;
 
@@ -128,7 +127,8 @@ class Keyboard {
         className: 'keyboard__key--green',
       },
       middleFingers: {
-        values: ['e', 'd', 'c', '4', ',', '8', 'i', 'k'],
+        values: ['e', 'd', 'c', '4', ',', '8', 'i', 'k',
+          'у', 'в', 'с', 'б', 'ш', 'л'],
         className: 'keyboard__key--rose',
       },
       leftPointerFinger: {

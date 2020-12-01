@@ -6,7 +6,7 @@ class Generator {
     };
   }
 
-  getText() {
+  pullText() {
     const url = this.lang === 'en' ? 'https://litipsum.com/api/1/json'
       : 'https://fish-text.ru/get?&type=sentence&number=3';
     fetch(url).then((data) => data.json())
@@ -19,7 +19,11 @@ class Generator {
   }
 
   static parseText(textArray) {
-    const splittedInWords = textArray.join('').replace('--', ' - ').split(' ');
+    const splittedInWords = textArray.join('')
+      .replace('--', ' - ')
+      .replace('“', '"')
+      .replace('”', '"')
+      .split(' ');
     return Generator.handleDots(splittedInWords);
   }
 

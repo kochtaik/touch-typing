@@ -10,6 +10,14 @@
   flex-direction: column;
   align-items: center;
 }
+.content .text__content {
+  width: 90%;
+  font-size: 18px;
+  text-align: center;
+}
+.content .text__content--char-highlighted {
+  background: #66d9ff;
+}
 .content .keyboard {
   width: 100%;
   height: auto;
