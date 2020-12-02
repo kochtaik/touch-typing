@@ -4,6 +4,7 @@ $light-rose: rgb(249, 185, 213);
 $light-orange: rgb(255, 192, 126);
 $light-yellow: rgb(255, 239, 126);
 $light-gray: rgb(175, 172, 177);
+$red-mistaked: rgba(221, 64, 64, 0.5);
 
 * {
   margin: 0;
@@ -22,8 +23,12 @@ $light-gray: rgb(175, 172, 177);
     font-size: 18px;
     text-align: center;
 
-    &--char-highlighted {
+    &--char-correct {
       background: $light-blue;
+    }
+
+    &--char-mistaked {
+      background: $red-mistaked;
     }
   }
 

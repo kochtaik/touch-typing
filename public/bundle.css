@@ -15,8 +15,11 @@
   font-size: 18px;
   text-align: center;
 }
-.content .text__content--char-highlighted {
+.content .text__content--char-correct {
   background: #66d9ff;
+}
+.content .text__content--char-mistaked {
+  background: rgba(221, 64, 64, 0.5);
 }
 .content .keyboard {
   width: 100%;
