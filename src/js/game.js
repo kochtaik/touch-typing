@@ -48,27 +48,32 @@ class Game {
     return `<span class="text__content${classPostfix}">${char}</span>`;
   }
 
-  validateInput(char) {
-    const requiredChar = this.text[this.inputIndex];
-    const inputText = this.elements.inputField.value;
-    const enteredCharIndex = inputText.length - 1;
-    const requiredCharIndex = this.inputIndex;
-    console.log('required:', requiredCharIndex);
-    console.log('entered:', enteredCharIndex);
-    if ((requiredCharIndex === enteredCharIndex) && (requiredChar === char)) {
+  validateInput(enteredChar) { // обязательно отрефакторить!
+    const userInput = this.elements.inputField.value;
+    if (this.isCorrect(enteredChar)) {
+      this.input = userInput;
       this.inputIndex += 1;
       this.advance(true);
-    } else if (inputText.length < this.input.length) {
-      this.inputIndex -= 1;
-      const { inputField } = this.elements;
-      const enteredChar = inputField.value[inputField.value.length - 1];
-      this.validateInput(enteredChar);
-      console.log('ready')
-    } else {
-      this.advance(false);
+    } else if (!this.isCorrect(enteredChar)) {
+      if (userInput.length < this.input.length) {
+        this.input = userInput;
+        this.inputIndex -= 1;
+        this.advance(true);
+      } else if ((userInput.length - this.input.length) >= 0) {
+        if (userInput.length - 1 === this.input.length - 1) {
+          this.input = userInput;
+          this.advance(true);
+        } else this.advance(false);
+      }
     }
-    console.log('inputText', inputText.length)
-    console.log('input', this.input.length)
+  }
+
+  isCorrect(enteredChar) {
+    const requiredChar = this.text[this.inputIndex];
+    const userInput = this.elements.inputField.value;
+    const enteredCharIndex = userInput.length - 1;
+    const requiredCharIndex = this.inputIndex;
+    return (requiredCharIndex === enteredCharIndex) && (requiredChar === enteredChar);
   }
 }
 
