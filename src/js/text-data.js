@@ -1,3 +1,6 @@
+// сделать функцию-релейсер на циклах
+// в русских текстах заменить двойные пробелы на одинарные
+
 class Generator {
   constructor(lang) {
     this.lang = lang;
@@ -19,15 +22,29 @@ class Generator {
   }
 
   static parseText(textArray) {
-    const splittedInWords = textArray.join('')
-      .replace('--', ' - ')
-      .replace('“', '"')
-      .replace('”', '"')
-      .split(' ');
-    return Generator.handleDots(splittedInWords);
+    const symbolsToReplace = {
+      '--': '-',
+      '  ': ' ',
+      '“': '"',
+      '”': '"',
+    };
+    const splittedInWords = textArray.join('');
+    const correctText = this.replacer(splittedInWords, symbolsToReplace);
+    return Generator.formSentences(correctText.split(' '));
   }
 
-  static handleDots(text) {
+  static replacer(str, symbols) {
+    let correctStr = str;
+    const pairs = Object.entries(symbols);
+    pairs.forEach(([mistaked, correct]) => {
+      while (correctStr.includes(mistaked)) {
+        correctStr = correctStr.replace(mistaked, correct);
+      }
+    });
+    return correctStr;
+  }
+
+  static formSentences(text) {
     const exclude = /([A-Z]|St|Dr|Mrs?)\./;
     let sentence = '';
     let sentenceCounter = 0;

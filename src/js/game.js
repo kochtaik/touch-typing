@@ -16,7 +16,7 @@ class Game {
   start() {
     // Game.startCountdown()
     const { inputField, startBtn } = this.elements;
-    this.advance(true);
+    this.updateTextElem(true);
     inputField.focus();
     startBtn.disabled = true;
     inputField.addEventListener('input', () => {
@@ -25,7 +25,7 @@ class Game {
     });
   }
 
-  advance(isCorrect) {
+  updateTextElem(isCorrect) {
     const { inputIndex, text } = this;
     const { textElem } = this.elements;
     const unhighlightedChar = this.getCurrentChar();
@@ -35,35 +35,43 @@ class Game {
     textElem.innerHTML = textCopy.join('');
   }
 
+  updateInputData(action = 'none') {
+    const userInput = this.elements.inputField.value;
+    if (action === 'increment') {
+      this.inputIndex += 1;
+    } else if (action === 'decrement') {
+      this.inputIndex -= (this.input.length - userInput.length);
+    }
+    this.input = userInput;
+  }
+
   getCurrentChar() {
     const { inputIndex, text } = this;
     return text.charAt(inputIndex);
   }
 
-  static highlightCurrentChar(char, isCorrect) {
+  static highlightCurrentChar(char, correct) {
     let classPostfix;
-    if (isCorrect) {
+    if (correct) {
       classPostfix = '--char-correct';
     } else classPostfix = '--char-mistaked';
     return `<span class="text__content${classPostfix}">${char}</span>`;
   }
 
-  validateInput(enteredChar) { // обязательно отрефакторить!
+  validateInput(enteredChar) {
     const userInput = this.elements.inputField.value;
     if (this.isCorrect(enteredChar)) {
-      this.input = userInput;
-      this.inputIndex += 1;
-      this.advance(true);
+      this.updateInputData('increment');
+      this.updateTextElem(true);
     } else if (!this.isCorrect(enteredChar)) {
       if (userInput.length < this.input.length) {
-        this.input = userInput;
-        this.inputIndex -= 1;
-        this.advance(true);
+        this.updateInputData('decrement');
+        this.updateTextElem(true);
       } else if ((userInput.length - this.input.length) >= 0) {
         if (userInput.length - 1 === this.input.length - 1) {
-          this.input = userInput;
-          this.advance(true);
-        } else this.advance(false);
+          this.updateInputData();
+          this.updateTextElem(true);
+        } else this.updateTextElem(false);
       }
     }
   }
@@ -73,7 +81,8 @@ class Game {
     const userInput = this.elements.inputField.value;
     const enteredCharIndex = userInput.length - 1;
     const requiredCharIndex = this.inputIndex;
-    return (requiredCharIndex === enteredCharIndex) && (requiredChar === enteredChar);
+    return (requiredCharIndex === enteredCharIndex)
+      && (requiredChar === enteredChar);
   }
 }
 
