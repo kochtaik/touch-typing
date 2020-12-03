@@ -11,6 +11,7 @@ class Facade {
     this.elements = {
       startBtn: document.querySelector('#start'),
       languageList: document.querySelector('#language'),
+      inputField: document.querySelector('#textinput'),
     };
   }
 
@@ -24,6 +25,8 @@ class Facade {
       const text = document.querySelector('#text').textContent;
       const game = new Game(text);
       game.start();
+      console.log(this.elements.inputField);
+      this.elements.inputField.addEventListener('input', Keyboard.highlightKey);
     }, 1000);
   }
 

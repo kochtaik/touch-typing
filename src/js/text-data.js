@@ -1,4 +1,3 @@
-// сделать функцию-релейсер на циклах
 // в русских текстах заменить двойные пробелы на одинарные
 
 class Generator {
@@ -12,12 +11,15 @@ class Generator {
   pullText() {
     const url = this.lang === 'en' ? 'https://litipsum.com/api/1/json'
       : 'https://fish-text.ru/get?&type=sentence&number=3';
+    const { textField } = this.elements;
     fetch(url).then((data) => data.json())
       .then((obj) => {
-        const { textField } = this.elements;
         if (this.lang === 'en') {
           textField.textContent = Generator.parseText(obj.text);
         } else textField.textContent = obj.text;
+      }).catch((e) => {
+        textField.textContent = 'Oops! Something went wrong:( Retry later';
+        throw new Error('Error in asynchronous function:', e);
       });
   }
 
@@ -27,6 +29,7 @@ class Generator {
       '  ': ' ',
       '“': '"',
       '”': '"',
+      ё: 'е',
     };
     const splittedInWords = textArray.join('');
     const correctText = this.replacer(splittedInWords, symbolsToReplace);

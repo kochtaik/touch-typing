@@ -1,8 +1,13 @@
+// исправить баг при изменении позиции курсора и удалении текста.
 /* eslint-disable no-console */
+
 class Game {
   constructor(text) {
     this.text = text;
-    this.mistakes = 0;
+    this.mistakes = {
+      count: 0,
+      committed: false,
+    };
     this.inputIndex = 0;
     this.input = '';
     this.start = this.start.bind(this);
@@ -42,6 +47,7 @@ class Game {
     } else if (action === 'decrement') {
       this.inputIndex -= (this.input.length - userInput.length);
     }
+    this.mistakes.committed = false;
     this.input = userInput;
   }
 
@@ -52,14 +58,20 @@ class Game {
 
   static highlightCurrentChar(char, correct) {
     let classPostfix;
+    let status;
     if (correct) {
       classPostfix = '--char-correct';
-    } else classPostfix = '--char-mistaked';
-    return `<span class="text__content${classPostfix}">${char}</span>`;
+      status = 'correct';
+    } else {
+      classPostfix = '--char-mistaked';
+      status = 'incorrect';
+    }
+    return `<span data-status="${status}"class="text__content${classPostfix}">${char}</span>`;
   }
 
   validateInput(enteredChar) {
     const userInput = this.elements.inputField.value;
+    const inputsDiff = userInput.length - this.input.length;
     if (this.isCorrect(enteredChar)) {
       this.updateInputData('increment');
       this.updateTextElem(true);
@@ -67,11 +79,15 @@ class Game {
       if (userInput.length < this.input.length) {
         this.updateInputData('decrement');
         this.updateTextElem(true);
-      } else if ((userInput.length - this.input.length) >= 0) {
+      } else if (inputsDiff >= 0) {
         if (userInput.length - 1 === this.input.length - 1) {
           this.updateInputData();
           this.updateTextElem(true);
-        } else this.updateTextElem(false);
+        } else {
+          if (inputsDiff === 1 && !this.mistakes.committed) this.mistakes.count += 1;
+          this.mistakes.committed = true;
+          this.updateTextElem(false);
+        }
       }
     }
   }

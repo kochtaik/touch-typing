@@ -1,8 +1,6 @@
 class Keyboard {
   constructor(lang) {
     this.lang = lang;
-    this.highlightKey = this.highlightKey.bind(this);
-    this.unhighlightKey = this.unhighlightKey.bind(this);
     this.elements = {
       keyboardField: document.querySelector('#keyboard'),
     };
@@ -37,12 +35,12 @@ class Keyboard {
       this.elements.keyboardField.innerHTML = '';
     }
     this.generateKeyboard();
-    document.addEventListener('keydown', (e) => {
-      this.highlightKey(e.code);
-    });
-    document.addEventListener('keyup', (e) => {
-      this.unhighlightKey(e.code);
-    });
+    // document.addEventListener('keydown', (e) => {
+    //   this.highlightKey(e.code);
+    // });
+    // document.addEventListener('keyup', (e) => {
+    //   this.unhighlightKey(e.code);
+    // });
   }
 
   generateKeyboard() {
@@ -155,18 +153,13 @@ class Keyboard {
     }
   }
 
-  highlightKey(keyCode) {
-    const pressedKey = Array.from(this.elements.keyboardKeys)
-      .find((keyElem) => keyElem.dataset.code === keyCode);
-    if (pressedKey === undefined) return;
-    pressedKey.classList.add('keyboard__key--pressed');
-  }
-
-  unhighlightKey(keyCode) {
-    const pressedKey = Array.from(this.elements.keyboardKeys)
-      .find((keyElem) => keyElem.dataset.code === keyCode);
-    if (pressedKey === undefined) return;
-    pressedKey.classList.remove('keyboard__key--pressed');
+  static highlightKey() {
+    const char = document.querySelector('.text__content--char-correct').textContent;
+    const keyToPress = Array.from(document.querySelectorAll('.keyboard__key'))
+      .find((keyElem) => keyElem.dataset.type === char.toLowerCase());
+    console.log(keyToPress);
+    if (keyToPress === undefined) return;
+    keyToPress.classList.add('keyboard__key--pressed');
   }
 }
 
