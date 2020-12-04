@@ -21,10 +21,18 @@ class Facade {
     generator.pullText();
     const keyboard = new Keyboard(lang);
     keyboard.init();
-    setTimeout(() => {
-      const text = document.querySelector('#text').textContent;
-      const game = new Game(text);
-      game.start();
+    Facade.launchPrestartCountdown();
+  }
+
+  static launchPrestartCountdown() {
+    let counter = 3;
+    const intervalId = setInterval(() => {
+      if (counter === 0) {
+        const text = document.querySelector('#text').textContent;
+        const game = new Game(text);
+        game.start();
+        clearInterval(intervalId);
+      } counter -= 1;
     }, 1000);
   }
 

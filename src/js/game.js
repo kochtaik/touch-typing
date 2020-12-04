@@ -4,13 +4,14 @@ import Keyboard from './keyboard';
 
 class Game {
   constructor(text) {
-    this.text = text;
+    this.text = text.trim();
     this.mistakes = {
       count: 0,
       committed: false,
     };
     this.inputIndex = 0;
     this.input = '';
+    this.gameStatus = 'active';
     this.start = this.start.bind(this);
     this.elements = {
       startBtn: document.querySelector('#start'),
@@ -20,7 +21,7 @@ class Game {
   }
 
   start() {
-    // Game.startCountdown()
+    this.startCountdown();
     const { inputField, startBtn } = this.elements;
     this.updateTextElem(true);
     inputField.focus();
@@ -29,6 +30,15 @@ class Game {
       const enteredChar = inputField.value[inputField.value.length - 1];
       this.validateInput(enteredChar);
     });
+  }
+
+  startCountdown() {
+    const start = Date.now();
+    const timerId = setInterval(() => {
+      const timePassed = Math.floor((Date.now() - start) / 1000);
+      console.log(timePassed);
+      if (this.isGameOver()) clearInterval(timerId);
+    }, 1000);
   }
 
   updateTextElem(isCorrect) {
@@ -96,6 +106,13 @@ class Game {
     const requiredCharIndex = this.inputIndex;
     return (requiredCharIndex === enteredCharIndex)
       && (requiredChar === enteredChar);
+  }
+
+  isGameOver() {
+    if (this.text === this.input) {
+      console.log('game is over!');
+      return true;
+    } return false;
   }
 }
 

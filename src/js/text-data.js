@@ -29,7 +29,8 @@ class Generator {
       '  ': ' ',
       '“': '"',
       '”': '"',
-      ё: 'е',
+      // eslint-disable-next-line quote-props
+      'ё': 'е',
     };
     const splittedInWords = textArray.join('');
     const correctText = this.replacer(splittedInWords, symbolsToReplace);
