@@ -1,5 +1,6 @@
 // исправить баг при изменении позиции курсора и удалении текста.
 /* eslint-disable no-console */
+import Keyboard from './keyboard';
 
 class Game {
   constructor(text) {
@@ -33,11 +34,13 @@ class Game {
   updateTextElem(isCorrect) {
     const { inputIndex, text } = this;
     const { textElem } = this.elements;
+    if (inputIndex > 0) Keyboard.unhighlightKey();
     const unhighlightedChar = this.getCurrentChar();
     const highlightedChar = Game.highlightCurrentChar(unhighlightedChar, isCorrect);
     const textCopy = [...text];
     textCopy.splice(inputIndex, 1, highlightedChar);
     textElem.innerHTML = textCopy.join('');
+    Keyboard.highlightKey(unhighlightedChar.toLowerCase());
   }
 
   updateInputData(action = 'none') {
@@ -58,15 +61,9 @@ class Game {
 
   static highlightCurrentChar(char, correct) {
     let classPostfix;
-    let status;
-    if (correct) {
-      classPostfix = '--char-correct';
-      status = 'correct';
-    } else {
-      classPostfix = '--char-mistaked';
-      status = 'incorrect';
-    }
-    return `<span data-status="${status}"class="text__content${classPostfix}">${char}</span>`;
+    if (correct) classPostfix = '--char-correct';
+    else classPostfix = '--char-mistaked';
+    return `<span class="text__content${classPostfix}">${char}</span>`;
   }
 
   validateInput(enteredChar) {

@@ -16,15 +16,21 @@ class Keyboard {
         'CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Backslash',
         'ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ShiftRight',
         'Space'],
-      englishLayout: ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
+      englishLayout: ['`', { default: '1', sup: '!' }, { default: '2', sup: '"' },
+        { default: '3', sup: '£' }, { default: '4', sup: '$' }, { default: '5', sup: '%' },
+        { default: '6', sup: '^' }, { default: '7', sup: '?' }, { default: '8', sup: '*' },
+        { default: '9', sup: '(' }, { default: '0', sup: ')' }, { default: '-', sup: '_' }, { default: '=', sup: '+' }, 'backspace',
         'tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
-        'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '#',
+        'capsLock', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', { default: ';', sup: ':' }, '\'', '#',
         'shiftL', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'shiftR',
         'space'],
-      russianLayout: ['ё', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'backspace',
+      russianLayout: ['ё', { default: '1', sup: '!' }, { default: '2', sup: '"' },
+        { default: '3', sup: '№' }, { default: '4', sup: ';' }, { default: '5', sup: '%' },
+        { default: '6', sup: ':' }, { default: '7', sup: '?' }, { default: '8', sup: '*' },
+        { default: '9', sup: '(' }, { default: '0', sup: ')' }, { default: '-', sup: '_' }, { default: '=', sup: '+' }, 'backspace',
         'tab', 'й', 'ц', 'у', 'к', 'е', 'н', 'г', 'ш', 'щ', 'з', 'х', 'ъ',
         'capsLock', 'ф', 'ы', 'в', 'а', 'п', 'р', 'о', 'л', 'д', 'ж', 'э', '\\',
-        'shiftL', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', '.', 'shiftR',
+        'shiftL', 'я', 'ч', 'с', 'м', 'и', 'т', 'ь', 'б', 'ю', { default: '.', sup: ',' }, 'shiftR',
         'space'],
     };
   }
@@ -35,12 +41,6 @@ class Keyboard {
       this.elements.keyboardField.innerHTML = '';
     }
     this.generateKeyboard();
-    // document.addEventListener('keydown', (e) => {
-    //   this.highlightKey(e.code);
-    // });
-    // document.addEventListener('keyup', (e) => {
-    //   this.unhighlightKey(e.code);
-    // });
   }
 
   generateKeyboard() {
@@ -87,14 +87,20 @@ class Keyboard {
           break;
 
         case 'space':
-          characterWrapper.textContent = '';
+          characterWrapper.textContent = ' ';
           key.classList.add('keyboard__key--extrawide');
           key.dataset.type = 'space';
           break;
 
         default:
-          characterWrapper.textContent = char.toLowerCase();
-          key.dataset.type = char.toLowerCase();
+          if (typeof char === 'object') {
+            characterWrapper.textContent = char.default.toLowerCase();
+            key.dataset.type = char.default.toLowerCase();
+            key.innerHTML = `<div class="keyboard__key__super">${char.sup}</div>`;
+          } else {
+            characterWrapper.textContent = char.toLowerCase();
+            key.dataset.type = char.toLowerCase();
+          }
           break;
       }
 
@@ -153,13 +159,18 @@ class Keyboard {
     }
   }
 
-  static highlightKey() {
-    const char = document.querySelector('.text__content--char-correct').textContent;
-    const keyToPress = Array.from(document.querySelectorAll('.keyboard__key'))
-      .find((keyElem) => keyElem.dataset.type === char.toLowerCase());
-    console.log(keyToPress);
-    if (keyToPress === undefined) return;
-    keyToPress.classList.add('keyboard__key--pressed');
+  static highlightKey(character) {
+    const keys = document.querySelectorAll('.keyboard__key__char');
+    const superChars = document.querySelectorAll('.keyboard__key__super');
+    const keyToPress = Array.from(keys)
+      .find((keyElem) => keyElem.textContent === character.toLowerCase())
+        || Array.from(superChars).find((superChar) => superChar.textContent === character);
+    keyToPress.parentNode.classList.add('keyboard__key--next');
+  }
+
+  static unhighlightKey() {
+    const pressedKey = document.querySelector('.keyboard__key--next');
+    pressedKey.classList.remove('keyboard__key--next');
   }
 }
 

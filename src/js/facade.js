@@ -17,16 +17,14 @@ class Facade {
 
   init() {
     const { lang } = this;
-    const text = new Generator(lang);
-    text.pullText();
+    const generator = new Generator(lang);
+    generator.pullText();
     const keyboard = new Keyboard(lang);
     keyboard.init();
     setTimeout(() => {
       const text = document.querySelector('#text').textContent;
       const game = new Game(text);
       game.start();
-      console.log(this.elements.inputField);
-      this.elements.inputField.addEventListener('input', Keyboard.highlightKey);
     }, 1000);
   }
 

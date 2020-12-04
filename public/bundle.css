@@ -37,12 +37,20 @@
   justify-content: center;
   user-select: none;
   transition-duration: 0.1;
+  font-size: 20px;
+  position: relative;
+}
+.content .keyboard__key__super {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  font-size: 22px;
 }
 .content .keyboard__key--extrawide {
   width: 35%;
 }
-.content .keyboard__key--pressed {
-  transform: scale(0.95);
+.content .keyboard__key--next {
+  box-shadow: 0px -1px 8px 4px #e2b428;
 }
 .content .keyboard__key--blue {
   background: #66d9ff;

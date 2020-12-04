@@ -47,13 +47,22 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
       justify-content: center;
       user-select: none;
       transition-duration: 0.1;
+      font-size: 20px;
+      position: relative;
+
+      &__super {
+        position: absolute;
+        left: 5px;
+        top: 0;
+        font-size: 22px;
+      }
 
       &--extrawide {
         width: 35%;
       }
 
-      &--pressed {
-        transform: scale(0.95);
+      &--next {
+        box-shadow: 0px -1px 8px 4px #e2b428;
       }
 
       &--blue {
