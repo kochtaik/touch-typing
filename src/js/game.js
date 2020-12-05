@@ -43,6 +43,8 @@ class Game {
       const secondsPassed = addZero(Math.floor((Date.now() - start) / 1000) % 60);
       const minutesPassed = addZero(Math.floor((Date.now() - start) / 60000) % 60);
       this.elements.time.textContent = `${minutesPassed}:${secondsPassed}`;
+      this.elements.speed.textContent = `${Math.round(this.input.length / ((parseInt(secondsPassed, 10)
+        / 60) + parseInt(minutesPassed, 10)))} CPM`;
       if (this.isGameOver()) clearInterval(timerId);
     }, 1000);
   }
@@ -127,7 +129,7 @@ class Game {
     const highlightedChar = document.querySelector('#text > span');
     const textWrapper = document.querySelector('.text-wrapper');
     if (highlightedChar.offsetTop > 140) {
-      textWrapper.scrollTop += 100;
+      textWrapper.scrollTop += 20;
     }
   }
 }

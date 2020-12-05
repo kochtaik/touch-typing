@@ -3,51 +3,71 @@
   padding: 0;
   box-sizing: border-box;
   font-size: 20px;
+  font-family: monospace;
 }
 
 .content {
   max-width: 1280px;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  background: #000;
 }
-.content .text-wrapper {
+.content .header {
+  display: flex;
+  justify-content: space-between;
   width: 66%;
-  height: 150px;
+  color: #FFF;
+}
+.content__wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.content__wrapper .text-wrapper {
+  width: 66%;
+  height: 200px;
   text-align: center;
   border: 2px solid #000;
   overflow-y: scroll;
+  background: #fff;
 }
-.content .text-wrapper__content {
+.content__wrapper .text-wrapper__content {
   width: 100%;
 }
-.content .text-wrapper__content--char-correct {
+.content__wrapper .text-wrapper__content--char-correct {
   background: #66d9ff;
 }
-.content .text-wrapper__content--char-mistaked {
+.content__wrapper .text-wrapper__content--char-mistaked {
   background: rgba(221, 64, 64, 0.5);
 }
-.content .game-data {
+.content__wrapper .game-data {
   width: 40%;
   display: flex;
   justify-content: space-between;
+  color: #FFF;
 }
-.content .input {
-  width: 90%;
+.content__wrapper .input {
+  width: 100%;
+  height: 170px;
   display: flex;
   justify-content: center;
 }
-.content .input > textarea {
+.content__wrapper .input > textarea {
   width: 66%;
 }
-.content .keyboard {
+.content__wrapper .keyboard {
   width: 100%;
   height: auto;
   text-align: center;
 }
-.content .keyboard__key {
-  width: 6.6%;
-  height: 60px;
+.content__wrapper .keyboard__key {
+  width: 4.3%;
+  height: 40px;
   margin: 1px;
   border: 1px solid #000;
   border-radius: 5px;
@@ -55,37 +75,38 @@
   align-items: center;
   justify-content: center;
   user-select: none;
-  transition-duration: 0.1;
-  font-size: 20px;
   position: relative;
 }
-.content .keyboard__key__super {
+.content__wrapper .keyboard__key__char {
+  font-size: 22px;
+}
+.content__wrapper .keyboard__key__super {
   position: absolute;
   left: 5px;
   top: 0;
-  font-size: 22px;
+  font-size: 18px;
 }
-.content .keyboard__key--extrawide {
+.content__wrapper .keyboard__key--extrawide {
   width: 35%;
 }
-.content .keyboard__key--next {
+.content__wrapper .keyboard__key--next {
   box-shadow: 0px -1px 8px 4px #e2b428;
 }
-.content .keyboard__key--blue {
+.content__wrapper .keyboard__key--blue {
   background: #66d9ff;
 }
-.content .keyboard__key--green {
+.content__wrapper .keyboard__key--green {
   background: #b3ff99;
 }
-.content .keyboard__key--rose {
+.content__wrapper .keyboard__key--rose {
   background: #f9b9d5;
 }
-.content .keyboard__key--orange {
+.content__wrapper .keyboard__key--orange {
   background: #ffc07e;
 }
-.content .keyboard__key--yellow {
+.content__wrapper .keyboard__key--yellow {
   background: #ffef7e;
 }
-.content .keyboard__key--gray {
+.content__wrapper .keyboard__key--gray {
   background: #afacb1;
 }

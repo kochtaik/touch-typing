@@ -15,21 +15,26 @@
         <option value="ru">Russian</option>
         <option value="en">English</option>
       </select>
+      <div class="header__settings">Settings</div>
+      <div class="header__help">Help</div>
     </header>
-    <section class="content__text text-wrapper">
-      <div id="text" class="text-wrapper__content"></div>  
-    </section>
-    <div class="content__game-data game-data">
-      <div class="game-data__speed">Speed: <span id="speed">0</span></div>
-      <div class="game-data__mistakes">Mistakes: <span id="mistakes">0</span></div>
-      <div class="game-data__time">Time: <span id="time"></span></div>
+    <div class="content__wrapper wrapper">
+      <section class="wrapper__text-wrapper text-wrapper">
+        <div id="text" class="text-wrapper__content"></div>  
+      </section>
+      <div class="wrapper__game-data game-data">
+        <div class="game-data__speed">Speed: <span id="speed">0</span></div>
+        <div class="game-data__mistakes">Mistakes: <span id="mistakes">0</span></div>
+        <div class="game-data__time">Time: <span id="time"></span></div>
+      </div>
+      <section class="wrapper__input input">
+        <textarea name="textinput" id="textinput" cols="30" rows="10"></textarea>
+      </section>
+      <section class="wrapper__keyboard  keyboard" id="keyboard">
+        <!-- сюда генерируется клавиатура -->
+      </section>
     </div>
-    <section class="content__input input">
-      <textarea name="textinput" id="textinput" cols="30" rows="10"></textarea>
-    </section>
-    <section class="content__keyboard  keyboard" id="keyboard">
-      <!-- сюда генерируется клавиатура -->
-    </section>
+    <footer class="content__footer footer"></footer>
   </main>
 </body>
 <script src="public/bundle.js"></script>
