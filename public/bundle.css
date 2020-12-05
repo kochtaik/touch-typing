@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-size: 20px;
 }
 
 .content {
@@ -10,16 +11,34 @@
   flex-direction: column;
   align-items: center;
 }
-.content .text__content {
-  width: 90%;
-  font-size: 18px;
+.content .text-wrapper {
+  width: 66%;
+  height: 150px;
   text-align: center;
+  border: 2px solid #000;
+  overflow-y: scroll;
 }
-.content .text__content--char-correct {
+.content .text-wrapper__content {
+  width: 100%;
+}
+.content .text-wrapper__content--char-correct {
   background: #66d9ff;
 }
-.content .text__content--char-mistaked {
+.content .text-wrapper__content--char-mistaked {
   background: rgba(221, 64, 64, 0.5);
+}
+.content .game-data {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+}
+.content .input {
+  width: 90%;
+  display: flex;
+  justify-content: center;
+}
+.content .input > textarea {
+  width: 66%;
 }
 .content .keyboard {
   width: 100%;

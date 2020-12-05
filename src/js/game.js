@@ -17,6 +17,9 @@ class Game {
       startBtn: document.querySelector('#start'),
       inputField: document.querySelector('#textinput'),
       textElem: document.querySelector('#text'),
+      speed: document.querySelector('#speed'),
+      time: document.querySelector('#time'),
+      mistakes: document.querySelector('#mistakes'),
     };
   }
 
@@ -29,14 +32,17 @@ class Game {
     inputField.addEventListener('input', () => {
       const enteredChar = inputField.value[inputField.value.length - 1];
       this.validateInput(enteredChar);
+      Game.scrollTextareaDown();
     });
   }
 
   startCountdown() {
+    const addZero = (value) => (value < 10 ? `0${value}` : value);
     const start = Date.now();
     const timerId = setInterval(() => {
-      const timePassed = Math.floor((Date.now() - start) / 1000);
-      console.log(timePassed);
+      const secondsPassed = addZero(Math.floor((Date.now() - start) / 1000) % 60);
+      const minutesPassed = addZero(Math.floor((Date.now() - start) / 60000) % 60);
+      this.elements.time.textContent = `${minutesPassed}:${secondsPassed}`;
       if (this.isGameOver()) clearInterval(timerId);
     }, 1000);
   }
@@ -73,7 +79,7 @@ class Game {
     let classPostfix;
     if (correct) classPostfix = '--char-correct';
     else classPostfix = '--char-mistaked';
-    return `<span class="text__content${classPostfix}">${char}</span>`;
+    return `<span class="text-wrapper__content${classPostfix}">${char}</span>`;
   }
 
   validateInput(enteredChar) {
@@ -91,7 +97,10 @@ class Game {
           this.updateInputData();
           this.updateTextElem(true);
         } else {
-          if (inputsDiff === 1 && !this.mistakes.committed) this.mistakes.count += 1;
+          if (inputsDiff === 1 && !this.mistakes.committed) {
+            this.mistakes.count += 1;
+            this.elements.mistakes.textContent = this.mistakes.count;
+          }
           this.mistakes.committed = true;
           this.updateTextElem(false);
         }
@@ -110,9 +119,16 @@ class Game {
 
   isGameOver() {
     if (this.text === this.input) {
-      console.log('game is over!');
       return true;
     } return false;
+  }
+
+  static scrollTextareaDown() {
+    const highlightedChar = document.querySelector('#text > span');
+    const textWrapper = document.querySelector('.text-wrapper');
+    if (highlightedChar.offsetTop > 140) {
+      textWrapper.scrollTop += 100;
+    }
   }
 }
 

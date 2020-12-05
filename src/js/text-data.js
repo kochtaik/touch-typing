@@ -25,7 +25,7 @@ class Generator {
 
   static parseText(textArray) {
     const symbolsToReplace = {
-      '--': '-',
+      '--': ' - ',
       '  ': ' ',
       '“': '"',
       '”': '"',
