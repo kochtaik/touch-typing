@@ -21,15 +21,15 @@ class Facade {
     generator.pullText();
     const keyboard = new Keyboard(lang);
     keyboard.init();
-    Facade.launchPrestartCountdown();
+    this.launchPrestartCountdown();
   }
 
-  static launchPrestartCountdown() {
+  launchPrestartCountdown() {
     let counter = 3;
     const intervalId = setInterval(() => {
       if (counter === 0) {
         const text = document.querySelector('#text').textContent;
-        const game = new Game(text);
+        const game = new Game(text, this.lang, this.mode);
         game.start();
         clearInterval(intervalId);
       } counter -= 1;

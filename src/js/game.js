@@ -1,14 +1,21 @@
 // исправить баг при изменении позиции курсора и удалении текста.
+// добавить блокировку всяких дейсвтий, если произошла ошибка в фетчинге
+// добавить нормальное окончание игры
 /* eslint-disable no-console */
 import Keyboard from './keyboard';
+import Statistics from './stats';
 
 class Game {
-  constructor(text) {
+  constructor(text, lang, mode) {
     this.text = text.trim();
+    this.lang = lang;
+    this.mode = mode;
     this.mistakes = {
       count: 0,
       committed: false,
     };
+    this.speed = 0;
+    this.time = 0;
     this.inputIndex = 0;
     this.input = '';
     this.gameStatus = 'active';
@@ -25,14 +32,16 @@ class Game {
 
   start() {
     this.startCountdown();
-    const { inputField, startBtn } = this.elements;
+    const { inputField, startBtn, textElem } = this.elements;
     this.updateTextElem(true);
     inputField.focus();
     startBtn.disabled = true;
+    textElem.classList.add('text-wrapper--active');
     inputField.addEventListener('input', () => {
       const enteredChar = inputField.value[inputField.value.length - 1];
       this.validateInput(enteredChar);
       Game.scrollTextareaDown();
+      this.isGameOver();
     });
   }
 
@@ -42,11 +51,22 @@ class Game {
     const timerId = setInterval(() => {
       const secondsPassed = addZero(Math.floor((Date.now() - start) / 1000) % 60);
       const minutesPassed = addZero(Math.floor((Date.now() - start) / 60000) % 60);
+      const currentSpeed = Math.round(this.input.length / ((parseInt(secondsPassed, 10)
+      / 60) + parseInt(minutesPassed, 10)));
+      this.time = Date.now() - start;
+      this.speed = currentSpeed;
+
       this.elements.time.textContent = `${minutesPassed}:${secondsPassed}`;
-      this.elements.speed.textContent = `${Math.round(this.input.length / ((parseInt(secondsPassed, 10)
-        / 60) + parseInt(minutesPassed, 10)))} CPM`;
-      if (this.isGameOver()) clearInterval(timerId);
+      this.elements.speed.textContent = `${currentSpeed} CPM`;
     }, 1000);
+    const gameStatusWatcher = setInterval(() => {
+      if (this.isGameOver()) {
+        clearInterval(timerId);
+        clearInterval(gameStatusWatcher);
+        const stats = new Statistics(this.mode, this.lang, this.speed, this.mistakes, this.time);
+        stats.updateStats();
+      }
+    }, 1);
   }
 
   updateTextElem(isCorrect) {
@@ -119,18 +139,18 @@ class Game {
       && (requiredChar === enteredChar);
   }
 
-  isGameOver() {
-    if (this.text === this.input) {
-      return true;
-    } return false;
-  }
-
   static scrollTextareaDown() {
     const highlightedChar = document.querySelector('#text > span');
     const textWrapper = document.querySelector('.text-wrapper');
     if (highlightedChar.offsetTop > 140) {
       textWrapper.scrollTop += 20;
     }
+  }
+
+  isGameOver() {
+    if (this.text === this.input) {
+      return true;
+    } return false;
   }
 }
 

@@ -5,6 +5,7 @@ $light-orange: rgb(255, 192, 126);
 $light-yellow: rgb(255, 239, 126);
 $light-gray: rgb(175, 172, 177);
 $red-mistaked: rgba(221, 64, 64, 0.5);
+@import './modalWindow';
 
 * {
   margin: 0;
@@ -21,13 +22,13 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background: #000;
+  background: #FFF;
 
   .header {
     display: flex;
     justify-content: space-between;
     width: 66%;
-    color: #FFF;
+    color: #fff;
   }
 
   &__wrapper {
@@ -44,6 +45,11 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
       border: 2px solid #000;
       overflow-y: scroll;
       background: #fff;
+      color: rgb(117, 117, 117);
+
+      &--active {
+        color: #000;
+      }
 
       &__content {
         width: 100%;
@@ -54,7 +60,7 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
 
         &--char-mistaked {
           background: $red-mistaked;
-        } 
+        }
       }
     }
 
@@ -62,7 +68,7 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
       width: 40%;
       display: flex;
       justify-content: space-between;
-      color: #FFF;
+      color: #fff;
     }
 
     .input {

@@ -20,7 +20,7 @@
     </header>
     <div class="content__wrapper wrapper">
       <section class="wrapper__text-wrapper text-wrapper">
-        <div id="text" class="text-wrapper__content"></div>  
+        <div id="text" class="text-wrapper__content">Here will be your text...</div>  
       </section>
       <div class="wrapper__game-data game-data">
         <div class="game-data__speed">Speed: <span id="speed">0</span></div>
@@ -36,6 +36,45 @@
     </div>
     <footer class="content__footer footer"></footer>
   </main>
+  <div class="modal">
+    <section class="modal__header header">
+      <h2 class="header__title">Your best games</h2>
+      <div class="header__stats-options">
+        Select mode:
+        <select name="" id="mode">
+          <option value="default">Default</option>
+          <option value="exact">Exact</option>
+        </select>
+        Select lang:
+        <select name="" id="lang">
+          <option selected value="ru">Russian</option>
+          <option value="en">English</option>
+        </select>
+        Sort by:
+        <select name="" id="sort">
+          <option selected value="speed">Speed</option>
+          <option value="time">Time</option>
+          <option value="mistakes">Mistakes</option>
+        </select>
+      </div>
+    </section>
+    <section class="modal__table-header table-header">
+      <span class="table-header__game-number">#</span>
+      <span class="table-header__game-speed">Speed, CPM</span>
+      <span class="table-header__game-time">Time</span>
+      <span class="table-header__game-mistakes">Mistakes</span>
+    </section>
+    <section class="modal__table-body table-body" id="results">
+      <!-- <span>
+        <span>1</span>
+        <span>300</span>
+        <span>01:10</span>
+        <span>2</span>
+      </span> -->
+      <!-- here will be stats -->
+    </section>
+  </div>
+  <div class="blackout"></div>
 </body>
 <script src="public/bundle.js"></script>
 </html>
