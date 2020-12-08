@@ -63,7 +63,8 @@ class Game {
       if (this.isGameOver()) {
         clearInterval(timerId);
         clearInterval(gameStatusWatcher);
-        const stats = new Statistics(this.mode, this.lang, this.speed, this.mistakes, this.time);
+        const stats = new Statistics(this.mode, this.lang, this.speed,
+          this.mistakes.count, this.time);
         stats.updateStats();
       }
     }, 1);

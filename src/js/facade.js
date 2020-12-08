@@ -3,6 +3,7 @@
 import Keyboard from './keyboard';
 import Generator from './text-data';
 import Game from './game';
+import Statistics from './stats';
 
 class Facade {
   constructor(lang, mode = 'default') {
