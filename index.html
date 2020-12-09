@@ -15,6 +15,10 @@
         <option value="ru">Russian</option>
         <option value="en">English</option>
       </select>
+      <select name="" id="mode">
+        <option selected value="default">Default</option>
+        <option value="exact" title="Only one mistake per 100 characters is allowed in this mode">Exact</option>
+      </select>
       <div class="header__settings">Settings</div>
       <div class="header__help">Help</div>
     </header>
@@ -28,7 +32,7 @@
         <div class="game-data__time">Time: <span id="time"></span></div>
       </div>
       <section class="wrapper__input input">
-        <textarea name="textinput" id="textinput" cols="30" rows="10"></textarea>
+        <textarea name="textinput" id="textinput" cols="30" rows="10" disabled></textarea>
       </section>
       <section class="wrapper__keyboard  keyboard" id="keyboard">
         <!-- сюда генерируется клавиатура -->
@@ -36,7 +40,7 @@
     </div>
     <footer class="content__footer footer"></footer>
   </main>
-  <div class="modal">
+  <div class="modal" id="stats">
     <section class="modal__header header">
       <h2 class="header__title">Your best games</h2>
       <div class="header__stats-options">
@@ -65,16 +69,11 @@
       <span class="table-header__game-mistakes">Mistakes</span>
     </section>
     <section class="modal__table-body table-body" id="results">
-      <!-- <span>
-        <span>1</span>
-        <span>300</span>
-        <span>01:10</span>
-        <span>2</span>
-      </span> -->
       <!-- here will be stats -->
     </section>
   </div>
-  <div class="blackout"></div>
+  <div class="modal" id="end-game"></div>
+  <div class="blackout" id="blackout"></div>
 </body>
 <script src="public/bundle.js"></script>
 </html>

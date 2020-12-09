@@ -31,10 +31,16 @@ class Statistics {
   }
 
   updateStats() {
+    const sameLang = JSON.parse(localStorage.getItem(this.lang));
+    const isGameInvalid = (arr) => (arr.some((el) => el === undefined));
     const games = {
       default: [],
       exact: [],
     };
+    if (sameLang !== null) {
+      games.default = sameLang.default;
+      games.exact = sameLang.exact;
+    }
     const game = {
       speed: this.speed,
       time: this.time,
@@ -44,9 +50,11 @@ class Statistics {
     if (localStorage.getItem(this.lang) !== null) {
       const sameLanguageGames = JSON.parse(localStorage.getItem(this.lang));
       games[this.mode] = sameLanguageGames[this.mode];
-    } else if (games[this.mode].length > 9) games[this.mode].pop();
+    }
     games[this.mode].push(game);
-    games[this.mode] = this.sortGames(this.sortCriterium);
+    if (games[this.mode].length > 9
+      || isGameInvalid(Object.values(game))) games[this.mode].pop();
+    games[this.mode] = Statistics.sortGames(games[this.mode], this.sortCriterium);
     localStorage.setItem(this.lang, JSON.stringify(games));
     this.displayStats();
   }
@@ -65,9 +73,8 @@ class Statistics {
     });
   }
 
-  sortGames(criterium = 'speed') {
-    const games = JSON.parse(localStorage.getItem(this.lang));
-    return games[this.mode].sort((game1, game2) => (criterium === 'speed' ? game2[criterium] - game1[criterium] : game1[criterium] - game2[criterium]));
+  static sortGames(games, criterium = 'speed') {
+    return games.sort((game1, game2) => (criterium === 'speed' ? game2[criterium] - game1[criterium] : game1[criterium] - game2[criterium]));
   }
 
   changeLang(selectedLang) {
@@ -87,7 +94,7 @@ class Statistics {
 
 document.addEventListener('DOMContentLoaded', () => {
   const stats = new Statistics('default', 'en');
-  stats.displayStats();
+  if (localStorage.getItem('en') !== null) stats.updateStats();
   stats.configure();
 });
 

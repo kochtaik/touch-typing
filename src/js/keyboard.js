@@ -165,11 +165,13 @@ class Keyboard {
     const keyToPress = Array.from(keys)
       .find((keyElem) => keyElem.textContent === character.toLowerCase())
         || Array.from(superChars).find((superChar) => superChar.textContent === character);
+    if (keyToPress === undefined) return;
     keyToPress.parentNode.classList.add('keyboard__key--next');
   }
 
   static unhighlightKey() {
     const pressedKey = document.querySelector('.keyboard__key--next');
+    if (pressedKey === undefined) return;
     pressedKey.classList.remove('keyboard__key--next');
   }
 }

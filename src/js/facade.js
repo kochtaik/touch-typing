@@ -3,13 +3,13 @@
 import Keyboard from './keyboard';
 import Generator from './text-data';
 import Game from './game';
-import Statistics from './stats';
 
 class Facade {
   constructor(lang, mode = 'default') {
     this.lang = lang;
     this.mode = mode;
     this.elements = {
+      modeList: document.querySelector('#mode'),
       startBtn: document.querySelector('#start'),
       languageList: document.querySelector('#language'),
       inputField: document.querySelector('#textinput'),
@@ -38,13 +38,15 @@ class Facade {
   }
 
   configureInterface() {
-    const { startBtn, languageList } = this.elements;
+    const { startBtn, languageList, modeList } = this.elements;
     startBtn.addEventListener('click', () => {
-      const { selectedIndex } = languageList.options;
+      let { selectedIndex } = languageList.options;
       const selectedLanguage = languageList.options[selectedIndex].value;
+      selectedIndex = modeList.options.selectedIndex;
+      const selectedMode = modeList.options[selectedIndex].value;
       if (selectedLanguage === '') alert('Select language!');
       else {
-        const facade = new Facade(selectedLanguage);
+        const facade = new Facade(selectedLanguage, selectedMode);
         facade.init();
       }
     });

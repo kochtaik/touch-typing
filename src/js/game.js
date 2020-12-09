@@ -20,7 +20,10 @@ class Game {
     this.input = '';
     this.gameStatus = 'active';
     this.start = this.start.bind(this);
+    this.hideBlackout = this.hideBlackout.bind(this);
     this.elements = {
+      modal: document.querySelector('#end-game'),
+      blackout: document.querySelector('#blackout'),
       startBtn: document.querySelector('#start'),
       inputField: document.querySelector('#textinput'),
       textElem: document.querySelector('#text'),
@@ -34,9 +37,15 @@ class Game {
     this.startCountdown();
     const { inputField, startBtn, textElem } = this.elements;
     this.updateTextElem(true);
+    inputField.disabled = false;
     inputField.focus();
+    inputField.value = '';
     startBtn.disabled = true;
     textElem.classList.add('text-wrapper--active');
+    if (this.mode === 'exact') {
+      this.allowedMistakesNum = Math.ceil(this.text.length / 100);
+      this.setMistakesInExactMode();
+    }
     inputField.addEventListener('input', () => {
       const enteredChar = inputField.value[inputField.value.length - 1];
       this.validateInput(enteredChar);
@@ -66,6 +75,7 @@ class Game {
         const stats = new Statistics(this.mode, this.lang, this.speed,
           this.mistakes.count, this.time);
         stats.updateStats();
+        this.endGame();
       }
     }, 1);
   }
@@ -122,7 +132,10 @@ class Game {
         } else {
           if (inputsDiff === 1 && !this.mistakes.committed) {
             this.mistakes.count += 1;
-            this.elements.mistakes.textContent = this.mistakes.count;
+            if (this.mode === 'exact') {
+              this.setMistakesInExactMode();
+              if (this.mistakes.count === this.allowedMistakesNum) this.gameStatus = 'failed';
+            } else this.elements.mistakes.textContent = this.mistakes.count;
           }
           this.mistakes.committed = true;
           this.updateTextElem(false);
@@ -149,9 +162,56 @@ class Game {
   }
 
   isGameOver() {
-    if (this.text === this.input) {
+    if (this.text === this.input || this.gameStatus === 'failed') {
       return true;
     } return false;
+  }
+
+  endGame() {
+    const {
+      inputField, modal,
+      startBtn, blackout,
+    } = this.elements;
+    inputField.disabled = true;
+    startBtn.disabled = false;
+    const title = document.createElement('h1');
+    title.textContent = 'Game over!';
+    modal.insertAdjacentElement('beforeend', title);
+    const message = this.createEndGameMessage();
+    modal.insertAdjacentElement('beforeend', message);
+    modal.classList.add('modal--active');
+    blackout.classList.add('blackout--active');
+    document.body.classList.add('body--prevent-scroll');
+    blackout.addEventListener('click', this.hideBlackout);
+    this.text = '';
+    this.inputIndex = 0;
+  }
+
+  createEndGameMessage() {
+    const { inputField } = this.elements;
+    const parsedTime = Statistics.parseTime(this.time);
+    const successMessage = `Congrats! You have typed the text at the speed ${this.speed}
+    CPM in ${parsedTime}, having committed ${this.mistakes.count} mistakes.`;
+    const unsuccsessMessage = `You commited more than ${this.allowedMistakesNum} allowed mistakes.
+    You have typed the text at the speed ${this.speed} CPM in ${parsedTime}.`;
+    const description = document.createElement('p');
+
+    if (this.text !== inputField.value) description.textContent = unsuccsessMessage;
+    else description.textContent = successMessage;
+    return description;
+  }
+
+  hideBlackout() {
+    const { blackout, modal } = this.elements;
+    blackout.classList.remove('blackout--active');
+    modal.classList.remove('modal--active');
+    modal.innerHTML = '';
+    document.body.classList.remove('body--prevent-scroll');
+    blackout.removeEventListener('click', this.hideBlackout);
+  }
+
+  setMistakesInExactMode() {
+    this.elements.mistakes.innerHTML = `<span>${this.mistakes.count}</span>/<span>${this.allowedMistakesNum}</span>`;
   }
 }
 
