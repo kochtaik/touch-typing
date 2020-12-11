@@ -1,5 +1,3 @@
-// в русских текстах заменить двойные пробелы на одинарные
-
 class Generator {
   constructor(lang) {
     this.lang = lang;
@@ -14,32 +12,48 @@ class Generator {
     const { textField } = this.elements;
     fetch(url).then((data) => data.json())
       .then((obj) => {
-        if (this.lang === 'en') {
-          textField.textContent = Generator.parseText(obj.text);
-        } else textField.textContent = obj.text;
+        textField.innerHTML = '';
+        if (this.lang === 'en') this.formText(Generator.parseText(obj.text));
+        else this.formText(Generator.replacer(obj.text));
       }).catch((e) => {
         textField.textContent = 'Oops! Something went wrong:( Retry later';
         throw new Error('Error in asynchronous function:', e);
       });
   }
 
+  formText(text) {
+    const { textField } = this.elements;
+    [...text].forEach((char, index) => {
+      const container = document.createElement('div');
+      const charWrapper = document.createElement('span');
+      charWrapper.innerText = char;
+      charWrapper.id = `char${index}`;
+      container.classList.add('text-wrapper__container');
+      charWrapper.classList.add('text-wrapper__container__char');
+      container.insertAdjacentElement('beforeend', charWrapper);
+      textField.insertAdjacentElement('beforeend', container);
+    });
+  }
+
   static parseText(textArray) {
+    const splittedInWords = textArray.join('');
+    const correctText = this.replacer(splittedInWords);
+    return Generator.formSentences(correctText.split(' '));
+  }
+
+  static replacer(str) {
     const symbolsToReplace = {
       '--': ' - ',
       '  ': ' ',
       '“': '"',
       '”': '"',
+      '’': '\'',
       // eslint-disable-next-line quote-props
       'ё': 'е',
+      ' ': '\u00A0',
     };
-    const splittedInWords = textArray.join('');
-    const correctText = this.replacer(splittedInWords, symbolsToReplace);
-    return Generator.formSentences(correctText.split(' '));
-  }
-
-  static replacer(str, symbols) {
     let correctStr = str;
-    const pairs = Object.entries(symbols);
+    const pairs = Object.entries(symbolsToReplace);
     pairs.forEach(([mistaked, correct]) => {
       while (correctStr.includes(mistaked)) {
         correctStr = correctStr.replace(mistaked, correct);

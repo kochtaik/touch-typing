@@ -7,9 +7,9 @@ class Keyboard {
 
     this.data = {
       HTMLCodes: {
-        backspace: '&larr;',
-        capsLock: '&uarr;',
-        tab: '&#8633;',
+        backspace: '\u2190',
+        capsLock: '\u2191',
+        tab: '\u2190',
       },
       keyCodes: ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace',
         'Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight',
@@ -75,13 +75,13 @@ class Keyboard {
           break;
 
         case 'shiftL':
-          characterWrapper.textContent = '&larr';
+          characterWrapper.textContent = '\u2191';
           key.style.width = '12%';
           key.dataset.type = 'shiftL';
           break;
 
         case 'shiftR':
-          characterWrapper.textContent = '&larr';
+          characterWrapper.textContent = '\u2191';
           key.dataset.type = 'shiftR';
           key.style.width = '12%';
           break;
@@ -171,7 +171,7 @@ class Keyboard {
 
   static unhighlightKey() {
     const pressedKey = document.querySelector('.keyboard__key--next');
-    if (pressedKey === undefined) return;
+    if (pressedKey === null) return;
     pressedKey.classList.remove('keyboard__key--next');
   }
 }

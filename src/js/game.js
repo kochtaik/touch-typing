@@ -1,13 +1,13 @@
-// исправить баг при изменении позиции курсора и удалении текста.
 // добавить блокировку всяких дейсвтий, если произошла ошибка в фетчинге
-// добавить нормальное окончание игры
+// не добавлять результаты неоконченных игр в статистику
+// исправить баг с отображением ошибок после точного режима
 /* eslint-disable no-console */
 import Keyboard from './keyboard';
 import Statistics from './stats';
 
 class Game {
   constructor(text, lang, mode) {
-    this.text = text.trim();
+    this.text = text.trim().split('');
     this.lang = lang;
     this.mode = mode;
     this.mistakes = {
@@ -25,7 +25,6 @@ class Game {
       modal: document.querySelector('#end-game'),
       blackout: document.querySelector('#blackout'),
       startBtn: document.querySelector('#start'),
-      inputField: document.querySelector('#textinput'),
       textElem: document.querySelector('#text'),
       speed: document.querySelector('#speed'),
       time: document.querySelector('#time'),
@@ -35,22 +34,19 @@ class Game {
 
   start() {
     this.startCountdown();
-    const { inputField, startBtn, textElem } = this.elements;
-    this.updateTextElem(true);
-    inputField.disabled = false;
-    inputField.focus();
-    inputField.value = '';
+    const { startBtn, textElem } = this.elements;
     startBtn.disabled = true;
+    textElem.focus();
     textElem.classList.add('text-wrapper--active');
     if (this.mode === 'exact') {
       this.allowedMistakesNum = Math.ceil(this.text.length / 100);
-      this.setMistakesInExactMode();
+      this.setMistakesDisplaying();
     }
-    inputField.addEventListener('input', () => {
-      const enteredChar = inputField.value[inputField.value.length - 1];
+    document.addEventListener('keypress', (e) => {
+      if (e.altKey) return;
+      e.preventDefault();
+      const enteredChar = e.key;
       this.validateInput(enteredChar);
-      Game.scrollTextareaDown();
-      this.isGameOver();
     });
   }
 
@@ -68,89 +64,70 @@ class Game {
       this.elements.time.textContent = `${minutesPassed}:${secondsPassed}`;
       this.elements.speed.textContent = `${currentSpeed} CPM`;
     }, 1000);
-    const gameStatusWatcher = setInterval(() => {
-      if (this.isGameOver()) {
-        clearInterval(timerId);
-        clearInterval(gameStatusWatcher);
-        const stats = new Statistics(this.mode, this.lang, this.speed,
-          this.mistakes.count, this.time);
-        stats.updateStats();
-        this.endGame();
-      }
-    }, 1);
-  }
-
-  updateTextElem(isCorrect) {
-    const { inputIndex, text } = this;
-    const { textElem } = this.elements;
-    if (inputIndex > 0) Keyboard.unhighlightKey();
-    const unhighlightedChar = this.getCurrentChar();
-    const highlightedChar = Game.highlightCurrentChar(unhighlightedChar, isCorrect);
-    const textCopy = [...text];
-    textCopy.splice(inputIndex, 1, highlightedChar);
-    textElem.innerHTML = textCopy.join('');
-    Keyboard.highlightKey(unhighlightedChar.toLowerCase());
-  }
-
-  updateInputData(action = 'none') {
-    const userInput = this.elements.inputField.value;
-    if (action === 'increment') {
-      this.inputIndex += 1;
-    } else if (action === 'decrement') {
-      this.inputIndex -= (this.input.length - userInput.length);
-    }
-    this.mistakes.committed = false;
-    this.input = userInput;
+    // const gameStatusWatcher = setInterval(() => {
+    //   if (this.isGameOver()) {
+    //     clearInterval(timerId);
+    //     clearInterval(gameStatusWatcher);
+    //     const stats = new Statistics(this.mode, this.lang, this.speed,
+    //       this.mistakes.count, this.time);
+    //     stats.updateStats();
+    //     this.endGame();
+    //   }
+    // }, 1);
   }
 
   getCurrentChar() {
     const { inputIndex, text } = this;
-    return text.charAt(inputIndex);
+    return text[inputIndex];
   }
 
-  static highlightCurrentChar(char, correct) {
+  static highlightChar(index, isCorrect) {
+    const char = document.querySelector(`#char${index}`);
+    if (char === null) return;
+    if (isCorrect) {
+      char.classList.add('text-wrapper__container__char--char-correct');
+    } else char.classList.add('text-wrapper__container__char--char-mistaked');
+  }
+
+  static getModificator(correct) {
     let classPostfix;
     if (correct) classPostfix = '--char-correct';
     else classPostfix = '--char-mistaked';
-    return `<span class="text-wrapper__content${classPostfix}">${char}</span>`;
+    return classPostfix;
   }
 
   validateInput(enteredChar) {
-    const userInput = this.elements.inputField.value;
-    const inputsDiff = userInput.length - this.input.length;
-    if (this.isCorrect(enteredChar)) {
-      this.updateInputData('increment');
+    const charToCompare = this.text[this.inputIndex];
+    if (Game.isMistake(enteredChar, charToCompare)) {
+      this.updateTextElem(false, enteredChar);
+    } else if (Game.isCorrect(enteredChar, charToCompare)) {
       this.updateTextElem(true);
-    } else if (!this.isCorrect(enteredChar)) {
-      if (userInput.length < this.input.length) {
-        this.updateInputData('decrement');
-        this.updateTextElem(true);
-      } else if (inputsDiff >= 0) {
-        if (userInput.length - 1 === this.input.length - 1) {
-          this.updateInputData();
-          this.updateTextElem(true);
-        } else {
-          if (inputsDiff === 1 && !this.mistakes.committed) {
-            this.mistakes.count += 1;
-            if (this.mode === 'exact') {
-              this.setMistakesInExactMode();
-              if (this.mistakes.count === this.allowedMistakesNum) this.gameStatus = 'failed';
-            } else this.elements.mistakes.textContent = this.mistakes.count;
-          }
-          this.mistakes.committed = true;
-          this.updateTextElem(false);
-        }
-      }
     }
+    this.inputIndex += 1;
   }
 
-  isCorrect(enteredChar) {
-    const requiredChar = this.text[this.inputIndex];
-    const userInput = this.elements.inputField.value;
-    const enteredCharIndex = userInput.length - 1;
-    const requiredCharIndex = this.inputIndex;
-    return (requiredCharIndex === enteredCharIndex)
-      && (requiredChar === enteredChar);
+  static isCorrect(enteredChar, charToCompare) {
+    if (enteredChar === charToCompare || Game.isSpace(enteredChar, charToCompare)) {
+      return true;
+    } return false;
+  }
+
+  static isMistake(enteredChar, charToCompare) {
+    console.log(enteredChar === charToCompare);
+    if (enteredChar !== charToCompare && !Game.isSpace(enteredChar, charToCompare)) {
+      return true;
+    } return false;
+  }
+
+  static isSpace(enteredChar, charToCompare) {
+    if (enteredChar === '\u0020' && charToCompare === '\u00A0') return true;
+    return false;
+  }
+
+  updateTextElem(isCorrect) {
+    const { inputIndex } = this;
+    if (inputIndex > 0) Keyboard.unhighlightKey();
+    Game.highlightChar(inputIndex, isCorrect);
   }
 
   static scrollTextareaDown() {
@@ -161,18 +138,11 @@ class Game {
     }
   }
 
-  isGameOver() {
-    if (this.text === this.input || this.gameStatus === 'failed') {
-      return true;
-    } return false;
-  }
-
   endGame() {
     const {
-      inputField, modal,
+      modal,
       startBtn, blackout,
     } = this.elements;
-    inputField.disabled = true;
     startBtn.disabled = false;
     const title = document.createElement('h1');
     title.textContent = 'Game over!';
@@ -188,7 +158,6 @@ class Game {
   }
 
   createEndGameMessage() {
-    const { inputField } = this.elements;
     const parsedTime = Statistics.parseTime(this.time);
     const successMessage = `Congrats! You have typed the text at the speed ${this.speed}
     CPM in ${parsedTime}, having committed ${this.mistakes.count} mistakes.`;
@@ -210,8 +179,15 @@ class Game {
     blackout.removeEventListener('click', this.hideBlackout);
   }
 
-  setMistakesInExactMode() {
-    this.elements.mistakes.innerHTML = `<span>${this.mistakes.count}</span>/<span>${this.allowedMistakesNum}</span>`;
+  setMistakesDisplaying() {
+    const mistakesElem = document.createElement('span');
+    mistakesElem.id = 'mistakes';
+    if (this.mode === 'exact') {
+      mistakesElem.textContent = `${this.mistakes.count}/${this.allowedMistakesNum}`;
+    } else {
+      mistakesElem.textContent = this.mistakes.count;
+    }
+    this.elements.mistakes.replaceWith(mistakesElem);
   }
 }
 

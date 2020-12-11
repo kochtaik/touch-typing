@@ -67,7 +67,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background: #FFF;
+  background: #fff;
 }
 .content .header {
   display: flex;
@@ -85,7 +85,6 @@
 .content__wrapper .text-wrapper {
   width: 66%;
   height: 200px;
-  text-align: center;
   border: 2px solid #000;
   overflow-y: scroll;
   background: #fff;
@@ -94,14 +93,24 @@
 .content__wrapper .text-wrapper--active {
   color: #000;
 }
-.content__wrapper .text-wrapper__content {
+.content__wrapper .text-wrapper__container {
+  width: min-content;
+  display: inline-block;
+}
+.content__wrapper .text-wrapper__container__char {
+  display: inline-block;
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  font-size: 36px;
+}
+.content__wrapper .text-wrapper__container__char--char-correct {
+  background: #49d073;
   width: 100%;
 }
-.content__wrapper .text-wrapper__content--char-correct {
-  background: #66d9ff;
-}
-.content__wrapper .text-wrapper__content--char-mistaked {
-  background: rgba(221, 64, 64, 0.5);
+.content__wrapper .text-wrapper__container__char--char-mistaked {
+  background: #d75b5b;
+  width: 100%;
 }
 .content__wrapper .game-data {
   width: 40%;
@@ -154,7 +163,7 @@
   background: #66d9ff;
 }
 .content__wrapper .keyboard__key--green {
-  background: #b3ff99;
+  background: #49d073;
 }
 .content__wrapper .keyboard__key--rose {
   background: #f9b9d5;

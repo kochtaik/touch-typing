@@ -1,11 +1,19 @@
 $light-blue: rgb(102, 217, 255);
-$light-green: rgb(179, 255, 153);
+$light-green: rgb(73, 208, 115);
 $light-rose: rgb(249, 185, 213);
 $light-orange: rgb(255, 192, 126);
 $light-yellow: rgb(255, 239, 126);
 $light-gray: rgb(175, 172, 177);
-$red-mistaked: rgba(221, 64, 64, 0.5);
-@import './modalWindow';
+$red-mistaked: rgb(215, 91, 91);
+@import "./modalWindow";
+
+@mixin character {
+  display: inline-block;
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  font-size: 36px;
+}
 
 * {
   margin: 0;
@@ -22,7 +30,7 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background: #FFF;
+  background: #fff;
 
   .header {
     display: flex;
@@ -41,7 +49,6 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
     .text-wrapper {
       width: 66%;
       height: 200px;
-      text-align: center;
       border: 2px solid #000;
       overflow-y: scroll;
       background: #fff;
@@ -51,15 +58,22 @@ $red-mistaked: rgba(221, 64, 64, 0.5);
         color: #000;
       }
 
-      &__content {
-        width: 100%;
+      &__container {
+        width: min-content;
+        display: inline-block;
 
-        &--char-correct {
-          background: $light-blue;
-        }
+        &__char {
+          @include character;
 
-        &--char-mistaked {
-          background: $red-mistaked;
+          &--char-correct {
+            background: $light-green;
+            width: 100%;
+          }
+
+          &--char-mistaked {
+            background: $red-mistaked;
+            width: 100%;
+          }
         }
       }
     }
