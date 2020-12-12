@@ -1,13 +1,14 @@
 // добавить блокировку всяких дейсвтий, если произошла ошибка в фетчинге
 // не добавлять результаты неоконченных игр в статистику
 // исправить баг с отображением ошибок после точного режима
+// убрать генерацию контейнеров для символов
 /* eslint-disable no-console */
 import Keyboard from './keyboard';
 import Statistics from './stats';
 
 class Game {
   constructor(text, lang, mode) {
-    this.text = text.trim().split('');
+    this.text = text.trim().split('\u00A0');
     this.lang = lang;
     this.mode = mode;
     this.mistakes = {
@@ -16,7 +17,8 @@ class Game {
     };
     this.speed = 0;
     this.time = 0;
-    this.inputIndex = 0;
+    this.wordInputIndex = 0;
+    this.charInputIndex = 0;
     this.input = '';
     this.gameStatus = 'active';
     this.start = this.start.bind(this);
@@ -43,10 +45,14 @@ class Game {
       this.setMistakesDisplaying();
     }
     document.addEventListener('keypress', (e) => {
-      if (e.altKey) return;
       e.preventDefault();
       const enteredChar = e.key;
       this.validateInput(enteredChar);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Backspace') return;
+      const backspace = e.key;
+      this.validateInput(backspace);
     });
   }
 
@@ -81,29 +87,20 @@ class Game {
     return text[inputIndex];
   }
 
-  static highlightChar(index, isCorrect) {
-    const char = document.querySelector(`#char${index}`);
-    if (char === null) return;
-    if (isCorrect) {
-      char.classList.add('text-wrapper__container__char--char-correct');
-    } else char.classList.add('text-wrapper__container__char--char-mistaked');
-  }
-
-  static getModificator(correct) {
-    let classPostfix;
-    if (correct) classPostfix = '--char-correct';
-    else classPostfix = '--char-mistaked';
-    return classPostfix;
-  }
-
   validateInput(enteredChar) {
-    const charToCompare = this.text[this.inputIndex];
-    if (Game.isMistake(enteredChar, charToCompare)) {
-      this.updateTextElem(false, enteredChar);
+    console.log(enteredChar);
+    const wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
+    const charToCompare = wordToCompare[this.charInputIndex];
+    if (enteredChar === 'Backspace') {
+      this.changeWordIndexes('decrement');
+      this.removeHighlight();
+    } else if (Game.isMistake(enteredChar, charToCompare)) {
+      this.updateTextElem(false);
+      this.changeWordIndexes('increment');
     } else if (Game.isCorrect(enteredChar, charToCompare)) {
       this.updateTextElem(true);
+      this.changeWordIndexes('increment');
     }
-    this.inputIndex += 1;
   }
 
   static isCorrect(enteredChar, charToCompare) {
@@ -113,7 +110,6 @@ class Game {
   }
 
   static isMistake(enteredChar, charToCompare) {
-    console.log(enteredChar === charToCompare);
     if (enteredChar !== charToCompare && !Game.isSpace(enteredChar, charToCompare)) {
       return true;
     } return false;
@@ -125,9 +121,49 @@ class Game {
   }
 
   updateTextElem(isCorrect) {
-    const { inputIndex } = this;
-    if (inputIndex > 0) Keyboard.unhighlightKey();
-    Game.highlightChar(inputIndex, isCorrect);
+    const { charInputIndex } = this;
+    if (charInputIndex > 0) Keyboard.unhighlightKey();
+    this.highlightChar(charInputIndex, isCorrect);
+  }
+
+  highlightChar(index, isCorrect) {
+    const char = document.querySelector(`#word${this.wordInputIndex} > span:nth-child(${index + 1})`);
+    if (char === null) return;
+    if (isCorrect) {
+      char.classList.add('word__char--char-correct');
+    } else {
+      char.classList.add('word__char--char-mistaked');
+    }
+  }
+
+  removeHighlight() {
+    const { wordInputIndex, charInputIndex } = this;
+    const char = document.querySelector(`#word${wordInputIndex} > span:nth-child(${charInputIndex + 1})`);
+    console.log(char);
+    if (char === null) return;
+    if (char.classList.contains('word__char--char-correct')) {
+      char.classList.remove('word__char--char-correct');
+    } else {
+      char.classList.remove('word__char--char-mistaked');
+    }
+  }
+
+  changeWordIndexes(direction) {
+    const wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
+    const charToCompare = wordToCompare[this.charInputIndex];
+    if (charToCompare === wordToCompare[wordToCompare.length - 1]) {
+      if (direction === 'increment') {
+        this.wordInputIndex += 1;
+        this.charInputIndex = 0;
+      } else {
+        this.wordInputIndex -= 1;
+        this.charInputIndex = wordToCompare.length - 1;
+      }
+    } else if (direction === 'increment') {
+      this.charInputIndex += 1;
+    } else {
+      this.charInputIndex -= 1;
+    }
   }
 
   static scrollTextareaDown() {

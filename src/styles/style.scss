@@ -1,3 +1,8 @@
+// переместить переменные в отдельный модуль
+
+$main-gray: rgb(148, 149, 153);
+$main-yellow: rgb(240, 217, 86);
+$main-font: "Exo 2", sans-serif;
 $light-blue: rgb(102, 217, 255);
 $light-green: rgb(73, 208, 115);
 $light-rose: rgb(249, 185, 213);
@@ -5,14 +10,26 @@ $light-orange: rgb(255, 192, 126);
 $light-yellow: rgb(255, 239, 126);
 $light-gray: rgb(175, 172, 177);
 $red-mistaked: rgb(215, 91, 91);
+$yellow-correct: linear-gradient(
+  to right,
+  $main-yellow,
+  $main-yellow 50%,
+  white 50%
+);
 @import "./modalWindow";
 
 @mixin character {
   display: inline-block;
-  height: 100%;
-  width: 0%;
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  font-size: 36px;
+  overflow: hidden;
+  color: #949599;
+  background-size: 0 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  font-size: 32px;
 }
 
 * {
@@ -20,7 +37,6 @@ $red-mistaked: rgb(215, 91, 91);
   padding: 0;
   box-sizing: border-box;
   font-size: 20px;
-  font-family: monospace;
 }
 
 .content {
@@ -30,7 +46,8 @@ $red-mistaked: rgb(215, 91, 91);
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
+  background-color: $main-gray;
+  font-family: $main-font;
 
   .header {
     display: flex;
@@ -49,30 +66,27 @@ $red-mistaked: rgb(215, 91, 91);
     .text-wrapper {
       width: 66%;
       height: 200px;
-      border: 2px solid #000;
       overflow-y: scroll;
-      background: #fff;
-      color: rgb(117, 117, 117);
 
       &--active {
         color: #000;
       }
 
-      &__container {
-        width: min-content;
+      .word {
         display: inline-block;
 
         &__char {
+          background: $yellow-correct;
           @include character;
 
           &--char-correct {
-            background: $light-green;
-            width: 100%;
+            background-position: 0 100%;
           }
 
           &--char-mistaked {
-            background: $red-mistaked;
-            width: 100%;
+            background: none;
+            color: $red-mistaked;
+            -webkit-text-fill-color: unset;
           }
         }
       }
@@ -83,17 +97,6 @@ $red-mistaked: rgb(215, 91, 91);
       display: flex;
       justify-content: space-between;
       color: #000;
-    }
-
-    .input {
-      width: 100%;
-      height: 170px;
-      display: flex;
-      justify-content: center;
-
-      & > textarea {
-        width: 66%;
-      }
     }
 
     .keyboard {

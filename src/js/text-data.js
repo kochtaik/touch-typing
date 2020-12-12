@@ -23,15 +23,19 @@ class Generator {
 
   formText(text) {
     const { textField } = this.elements;
-    [...text].forEach((char, index) => {
-      const container = document.createElement('div');
-      const charWrapper = document.createElement('span');
-      charWrapper.innerText = char;
-      charWrapper.id = `char${index}`;
-      container.classList.add('text-wrapper__container');
-      charWrapper.classList.add('text-wrapper__container__char');
-      container.insertAdjacentElement('beforeend', charWrapper);
-      textField.insertAdjacentElement('beforeend', container);
+    text.split('\u00A0').forEach((word, wordIndex) => {
+      const wordElem = document.createElement('div');
+      wordElem.id = `word${wordIndex}`;
+      const characters = [...word];
+      characters.push('\u00A0');
+      characters.forEach((char) => {
+        const charWrapper = document.createElement('span');
+        charWrapper.innerText = char;
+        charWrapper.classList.add('word__char');
+        wordElem.insertAdjacentElement('beforeend', charWrapper);
+      });
+      wordElem.classList.add('word');
+      textField.insertAdjacentElement('beforeend', wordElem);
     });
   }
 
