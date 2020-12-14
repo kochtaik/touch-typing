@@ -39,7 +39,6 @@ class Game {
     const { startBtn, textElem } = this.elements;
     startBtn.disabled = true;
     textElem.focus();
-    textElem.classList.add('text-wrapper--active');
     if (this.mode === 'exact') {
       this.allowedMistakesNum = Math.ceil(this.text.length / 100);
       this.setMistakesDisplaying();
@@ -54,6 +53,7 @@ class Game {
       const backspace = e.key;
       this.validateInput(backspace);
     });
+    this.createCaretElem();
   }
 
   startCountdown() {
@@ -90,8 +90,10 @@ class Game {
   validateInput(enteredChar) {
     if (enteredChar === 'Backspace'
     && this.wordInputIndex === 0 && this.charInputIndex === 0) return;
+
     const wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
     const charToCompare = wordToCompare[this.charInputIndex];
+
     if (enteredChar === 'Backspace') {
       this.changeWordIndexes('decrement');
       this.removeHighlight();
@@ -102,6 +104,8 @@ class Game {
       this.updateTextElem(true);
       this.changeWordIndexes('increment');
     }
+    this.scrollText();
+    this.moveCaret();
   }
 
   static isCorrect(enteredChar, charToCompare) {
@@ -140,7 +144,6 @@ class Game {
   removeHighlight() {
     const { wordInputIndex, charInputIndex } = this;
     const char = document.querySelector(`#word${wordInputIndex} > span:nth-child(${charInputIndex + 1})`);
-    console.log('to remove:', char);
     if (char === null) return;
     if (char.classList.contains('word__char--char-correct')) {
       char.classList.remove('word__char--char-correct');
@@ -150,30 +153,49 @@ class Game {
   }
 
   changeWordIndexes(direction) {
-    const wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
+    let wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
     const charToCompare = wordToCompare[this.charInputIndex];
-    if (charToCompare === wordToCompare[wordToCompare.length - 1]
-      && direction === 'increment') {
-      this.wordInputIndex += 1;
-      this.charInputIndex = 0;
+    // console.log('char:', this.charInputIndex);
+    // console.log('word:', this.wordInputIndex);
+    if (charToCompare === wordToCompare[wordToCompare.length - 1]) {
+      if (direction === 'increment') {
+        this.wordInputIndex += 1;
+        this.charInputIndex = 0;
+      } else this.charInputIndex -= 1;
     } else if (direction === 'increment') {
       this.charInputIndex += 1;
-    }
-
-    else if (charToCompare === wordToCompare[0] && direction === 'decrement') {
-      this.wordInputIndex -= 1;
-      this.charInputIndex = wordToCompare.length - 1;
+    } else if (charToCompare === wordToCompare[0]) {
+      if (direction === 'decrement') {
+        this.wordInputIndex -= 1;
+        wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
+        this.charInputIndex = wordToCompare.length - 1;
+      } else this.charInputIndex += 1;
     } else if (direction === 'decrement') {
       this.charInputIndex -= 1;
     }
   }
 
-  static scrollTextareaDown() {
-    const highlightedChar = document.querySelector('#text > span');
-    const textWrapper = document.querySelector('.text-wrapper');
-    if (highlightedChar.offsetTop > 140) {
-      textWrapper.scrollTop += 20;
-    }
+  scrollText() {
+    const word = document.querySelector(`#word${this.wordInputIndex}`);
+    word.scrollIntoView();
+  }
+
+  createCaretElem() {
+    const { textElem } = this.elements;
+    const caret = document.createElement('span');
+    caret.classList.add('caret');
+    caret.id = 'caret';
+    this.elements.caret = caret;
+    textElem.insertAdjacentElement('afterbegin', caret);
+  }
+
+  moveCaret() {
+    const { charInputIndex, wordInputIndex } = this;
+    const { caret } = this.elements;
+    const сurrentChar = document.querySelector(`#word${wordInputIndex} > span:nth-child(${charInputIndex + 1})`);
+    const { x, y } = сurrentChar.getBoundingClientRect();
+    caret.style.left = `${x}px`;
+    caret.style.top = `${y}px`;
   }
 
   endGame() {

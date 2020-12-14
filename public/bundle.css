@@ -86,9 +86,10 @@
   width: 66%;
   height: 200px;
   overflow-y: scroll;
+  outline: none;
 }
-.content__wrapper .text-wrapper--active {
-  color: #000;
+.content__wrapper .text-wrapper::-webkit-scrollbar {
+  display: none;
 }
 .content__wrapper .text-wrapper .word {
   display: inline-block;
@@ -104,7 +105,7 @@
   -webkit-text-fill-color: transparent;
   background-size: 200% 100%;
   background-position: 100%;
-  transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   font-size: 32px;
 }
 .content__wrapper .text-wrapper .word__char--char-correct {
@@ -114,6 +115,27 @@
   background: none;
   color: #d75b5b;
   -webkit-text-fill-color: unset;
+}
+.content__wrapper .text-wrapper .caret {
+  opacity: 0;
+  position: absolute;
+  width: 2px;
+  height: 32px;
+  background: #000;
+  transition-duration: 0.3s;
+  animation: twinkle 1s infinite;
+}
+.content__wrapper .text-wrapper .caret--active {
+  animation: none;
+  opacity: 1;
+}
+@keyframes twinkle {
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 .content__wrapper .game-data {
   width: 40%;
