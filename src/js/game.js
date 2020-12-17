@@ -1,10 +1,7 @@
 // добавить блокировку всяких дейсвтий, если произошла ошибка в фетчинге
-// не добавлять результаты неоконченных игр в статистику
 // исправить баг с отображением ошибок после точного режима
-// убрать генерацию контейнеров для символов
 /* eslint-disable no-console */
 import Keyboard from './keyboard';
-import Statistics from './stats';
 
 class Game {
   constructor(text, lang, mode) {
@@ -12,16 +9,18 @@ class Game {
     this.lang = lang;
     this.mode = mode;
     this.mistakes = {
-      count: 0,
-      committed: false,
+      total: 0,
+      corrected: 0,
     };
     this.speed = 0;
     this.time = 0;
     this.wordInputIndex = 0;
     this.charInputIndex = 0;
-    this.input = '';
+    this.inputLength = 0;
     this.gameStatus = 'active';
     this.start = this.start.bind(this);
+    this.handleBackspace = this.handleBackspace.bind(this);
+    this.handleKeypress = this.handleKeypress.bind(this);
     this.hideBlackout = this.hideBlackout.bind(this);
     this.elements = {
       modal: document.querySelector('#end-game'),
@@ -38,22 +37,27 @@ class Game {
     this.startCountdown();
     const { startBtn, textElem } = this.elements;
     startBtn.disabled = true;
-    textElem.focus();
     if (this.mode === 'exact') {
-      this.allowedMistakesNum = Math.ceil(this.text.length / 100);
+      const textLength = textElem.textContent.length;
+      this.allowedMistakesNum = Math.ceil(textLength / 100);
       this.setMistakesDisplaying();
     }
-    document.addEventListener('keypress', (e) => {
-      e.preventDefault();
-      const enteredChar = e.key;
-      this.validateInput(enteredChar);
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Backspace') return;
-      const backspace = e.key;
-      this.validateInput(backspace);
-    });
+    document.addEventListener('keypress', this.handleKeypress);
+    document.addEventListener('keydown', this.handleBackspace);
     this.createCaretElem();
+  }
+
+  handleKeypress(e) {
+    e.preventDefault();
+    const enteredChar = e.key;
+    this.validateInput(enteredChar);
+    this.watchGameStatus();
+  }
+
+  handleBackspace(e) {
+    if (e.key !== 'Backspace') return;
+    const backspace = e.key;
+    this.validateInput(backspace);
   }
 
   startCountdown() {
@@ -62,24 +66,25 @@ class Game {
     const timerId = setInterval(() => {
       const secondsPassed = addZero(Math.floor((Date.now() - start) / 1000) % 60);
       const minutesPassed = addZero(Math.floor((Date.now() - start) / 60000) % 60);
-      const currentSpeed = Math.round(this.input.length / ((parseInt(secondsPassed, 10)
-      / 60) + parseInt(minutesPassed, 10)));
+      const currentSpeed = this.countSpeed();
       this.time = Date.now() - start;
       this.speed = currentSpeed;
-
       this.elements.time.textContent = `${minutesPassed}:${secondsPassed}`;
       this.elements.speed.textContent = `${currentSpeed} CPM`;
     }, 1000);
-    // const gameStatusWatcher = setInterval(() => {
-    //   if (this.isGameOver()) {
-    //     clearInterval(timerId);
-    //     clearInterval(gameStatusWatcher);
-    //     const stats = new Statistics(this.mode, this.lang, this.speed,
-    //       this.mistakes.count, this.time);
-    //     stats.updateStats();
-    //     this.endGame();
-    //   }
-    // }, 1);
+    const timerWatcher = setInterval(() => {
+      if (this.gameStatus === 'completed'
+        || this.gameStatus === 'failed') {
+        clearInterval(timerId);
+        clearInterval(timerWatcher);
+      }
+    }, 1);
+  }
+
+  watchGameStatus() {
+    if (this.isGameOver()) {
+      this.endGame();
+    }
   }
 
   getCurrentChar() {
@@ -91,18 +96,22 @@ class Game {
     if (enteredChar === 'Backspace'
     && this.wordInputIndex === 0 && this.charInputIndex === 0) return;
 
-    const wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
+    const wordElement = document.querySelector(`#word${this.wordInputIndex}`);
+    if (wordElement == null) return;
+
+    const wordToCompare = wordElement.textContent;
     const charToCompare = wordToCompare[this.charInputIndex];
 
     if (enteredChar === 'Backspace') {
-      this.changeWordIndexes('decrement');
+      this.changeIndexes('decrement');
       this.removeHighlight();
     } else if (Game.isMistake(enteredChar, charToCompare)) {
       this.updateTextElem(false);
-      this.changeWordIndexes('increment');
+      this.changeIndexes('increment');
+      this.updateMistakes(false);
     } else if (Game.isCorrect(enteredChar, charToCompare)) {
       this.updateTextElem(true);
-      this.changeWordIndexes('increment');
+      this.changeIndexes('increment');
     }
     this.scrollText();
     this.moveCaret();
@@ -149,34 +158,45 @@ class Game {
       char.classList.remove('word__char--char-correct');
     } else {
       char.classList.remove('word__char--char-mistaked');
+      this.updateMistakes(true);
     }
   }
 
-  changeWordIndexes(direction) {
+  changeIndexes(direction) {
     let wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
     const charToCompare = wordToCompare[this.charInputIndex];
-    // console.log('char:', this.charInputIndex);
-    // console.log('word:', this.wordInputIndex);
+    // console.log('char before:', this.charInputIndex);
+    // console.log('word before:', this.wordInputIndex);
     if (charToCompare === wordToCompare[wordToCompare.length - 1]) {
       if (direction === 'increment') {
         this.wordInputIndex += 1;
         this.charInputIndex = 0;
-      } else this.charInputIndex -= 1;
+        this.inputLength += 1;
+      } else {
+        this.charInputIndex -= 1;
+        this.inputLength -= 1;
+      }
     } else if (direction === 'increment') {
       this.charInputIndex += 1;
-    } else if (charToCompare === wordToCompare[0]) {
+      this.inputLength += 1;
+    } else if (this.charInputIndex === 0) {
       if (direction === 'decrement') {
         this.wordInputIndex -= 1;
+        this.inputLength -= 1;
         wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
         this.charInputIndex = wordToCompare.length - 1;
       } else this.charInputIndex += 1;
     } else if (direction === 'decrement') {
       this.charInputIndex -= 1;
+      this.inputLength -= 1;
     }
+    console.log('char after:', this.charInputIndex);
+    console.log('word after:', this.wordInputIndex);
   }
 
   scrollText() {
     const word = document.querySelector(`#word${this.wordInputIndex}`);
+    if (word == null) return;
     word.scrollIntoView();
   }
 
@@ -192,10 +212,49 @@ class Game {
   moveCaret() {
     const { charInputIndex, wordInputIndex } = this;
     const { caret } = this.elements;
-    const сurrentChar = document.querySelector(`#word${wordInputIndex} > span:nth-child(${charInputIndex + 1})`);
-    const { x, y } = сurrentChar.getBoundingClientRect();
-    caret.style.left = `${x}px`;
-    caret.style.top = `${y}px`;
+    let сurrentChar = document.querySelector(`#word${wordInputIndex} > span:nth-child(${charInputIndex + 1})`);
+    if (сurrentChar == null) {
+      const currentWord = document.querySelector(`#word${wordInputIndex - 1}`);
+      сurrentChar = currentWord.lastChild;
+      const { x, width } = сurrentChar.getBoundingClientRect();
+      caret.style.left = `${x + width}px`;
+    } else {
+      const { x, y } = сurrentChar.getBoundingClientRect();
+      caret.style.left = `${x}px`;
+      caret.style.top = `${y}px`;
+    }
+  }
+
+  countSpeed() {
+    const { inputLength, time } = this;
+    const minutes = Math.floor(time) / 60000;
+    return Math.round(inputLength / minutes);
+  }
+
+  updateMistakes(corrected) {
+    if (corrected) {
+      this.mistakes.corrected += 1;
+    } else this.mistakes.total += 1;
+    const { mistakes } = this.elements;
+    mistakes.textContent = this.mistakes.total;
+  }
+
+  isGameOver() {
+    const { textElem } = this.elements;
+    if (this.mode === 'exact') {
+      if (this.mistakes.total === this.allowedMistakesNum) {
+        this.gameStatus = 'failed';
+        return true;
+      } if (this.inputLength === textElem.textContent.length) {
+        this.gameStatus = 'completed';
+        return true;
+      }
+    }
+    if (this.inputLength === textElem.textContent.length) {
+      this.gameStatus = 'completed';
+      return true;
+    }
+    return false;
   }
 
   endGame() {
@@ -204,6 +263,8 @@ class Game {
       startBtn, blackout,
     } = this.elements;
     startBtn.disabled = false;
+    document.removeEventListener('keypress', this.handleKeypress);
+    document.removeEventListener('keydown', this.handleBackspace);
     const title = document.createElement('h1');
     title.textContent = 'Game over!';
     modal.insertAdjacentElement('beforeend', title);
@@ -213,19 +274,16 @@ class Game {
     blackout.classList.add('blackout--active');
     document.body.classList.add('body--prevent-scroll');
     blackout.addEventListener('click', this.hideBlackout);
-    this.text = '';
-    this.inputIndex = 0;
   }
 
   createEndGameMessage() {
-    const parsedTime = Statistics.parseTime(this.time);
+    const parsedTime = Game.parseTime(this.time);
     const successMessage = `Congrats! You have typed the text at the speed ${this.speed}
-    CPM in ${parsedTime}, having committed ${this.mistakes.count} mistakes.`;
+    CPM in ${parsedTime}, having committed ${this.mistakes.total} mistakes.`;
     const unsuccsessMessage = `You commited more than ${this.allowedMistakesNum} allowed mistakes.
     You have typed the text at the speed ${this.speed} CPM in ${parsedTime}.`;
     const description = document.createElement('p');
-
-    if (this.text !== inputField.value) description.textContent = unsuccsessMessage;
+    if (this.gameStatus === 'failed') description.textContent = unsuccsessMessage;
     else description.textContent = successMessage;
     return description;
   }
@@ -240,14 +298,19 @@ class Game {
   }
 
   setMistakesDisplaying() {
-    const mistakesElem = document.createElement('span');
-    mistakesElem.id = 'mistakes';
+    const { mistakes } = this.elements;
+    const wrapper = mistakes.parentNode;
     if (this.mode === 'exact') {
-      mistakesElem.textContent = `${this.mistakes.count}/${this.allowedMistakesNum}`;
-    } else {
-      mistakesElem.textContent = this.mistakes.count;
-    }
-    this.elements.mistakes.replaceWith(mistakesElem);
+      wrapper.innerHTML = `Mistakes: <span id="mistakes">${this.mistakes.total}</span>/${this.allowedMistakesNum}`;
+    } else wrapper.innerHTML = `Mistakes: <span id="mistakes">${this.mistakes.total}</span>`;
+    this.elements.mistakes = document.querySelector('#mistakes');
+  }
+
+  static parseTime(time) {
+    const addZero = (value) => (value < 10 ? `0${value}` : value);
+    const seconds = addZero(Math.floor(time / 1000) % 60);
+    const minutes = addZero(Math.floor(time / 60000) % 60);
+    return `${minutes}:${seconds}`;
   }
 }
 

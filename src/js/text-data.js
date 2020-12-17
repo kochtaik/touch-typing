@@ -8,13 +8,17 @@ class Generator {
 
   pullText() {
     const url = this.lang === 'en' ? 'https://litipsum.com/api/1/json'
-      : 'https://fish-text.ru/get?&type=sentence&number=3';
+      : 'https://fish-text.ru/get?&type=sentence&number=2';
     const { textField } = this.elements;
     fetch(url).then((data) => data.json())
       .then((obj) => {
         textField.innerHTML = '';
-        if (this.lang === 'en') this.formText(Generator.parseText(obj.text));
-        else this.formText(Generator.replacer(obj.text));
+        if (this.lang === 'en') {
+          const totalText = Generator.parseText(obj.text);
+          if (totalText.length < 50) {
+            this.pullText();
+          } else this.formText(Generator.parseText(obj.text));
+        } else this.formText(Generator.replacer('Привет всем'));
       }).catch((e) => {
         textField.textContent = 'Oops! Something went wrong:( Retry later';
         throw new Error('Error in asynchronous function:', e);
@@ -23,11 +27,12 @@ class Generator {
 
   formText(text) {
     const { textField } = this.elements;
-    text.split('\u00A0').forEach((word, wordIndex) => {
+    const splittedText = text.split('\u00A0');
+    splittedText.forEach((word, wordIndex) => {
       const wordElem = document.createElement('div');
       wordElem.id = `word${wordIndex}`;
       const characters = [...word];
-      characters.push('\u00A0');
+      if (wordIndex !== splittedText.length - 1) characters.push('\u00A0');
       characters.forEach((char) => {
         const charWrapper = document.createElement('span');
         charWrapper.innerText = char;
@@ -40,9 +45,9 @@ class Generator {
   }
 
   static parseText(textArray) {
-    const splittedInWords = textArray.join('');
-    const correctText = this.replacer(splittedInWords);
-    return Generator.formSentences(correctText.split(' '));
+    const textString = textArray.join('');
+    const correctText = this.replacer(textString);
+    return Generator.formSentences(correctText.split('\u00A0'));
   }
 
   static replacer(str) {
@@ -67,23 +72,32 @@ class Generator {
   }
 
   static formSentences(text) {
+    const hasDelimeters = (word, delimters) => word.some((char) => delimters.includes(char));
     const exclude = /([A-Z]|St|Dr|Mrs?)\./;
     let sentence = '';
     let sentenceCounter = 0;
     const result = [];
     text.forEach((word) => {
-      if (sentenceCounter >= 5) return;
-      if (word.includes('.')) {
-        if (exclude.test(word)) sentence += `${word} `;
+      const sentencesDelimeters = ['.', '!', ';', '?'];
+      if (sentenceCounter >= 3) return;
+      if (hasDelimeters([...word], sentencesDelimeters)) {
+        if (exclude.test(word)) sentence += `${word}\u00A0`;
         else {
-          sentence += `${word} `;
+          sentence += `${word}\u00A0`;
           result.push(sentence);
           sentenceCounter += 1;
           sentence = '';
         }
-      } else sentence += `${word} `;
+      } else sentence += `${word}\u00A0`;
     });
-    return result.join('');
+    let totalText = result.join('').trim();
+    if (!Generator.areQuotesBalanced(totalText)) totalText += '"';
+    return totalText;
+  }
+
+  static areQuotesBalanced(str) {
+    const quotesNum = [...str].reduce((acc, char) => (char === '"' ? acc += 1 : acc), 0);
+    return quotesNum % 2 === 0;
   }
 }
 
