@@ -1,4 +1,4 @@
-.body--prevent-scroll {
+.prevent-scroll {
   overflow-y: hidden;
 }
 
@@ -75,6 +75,29 @@
   width: 66%;
   color: #000;
 }
+.content .header .toggle-switch {
+  width: 70px;
+  height: 30px;
+  border-radius: 30px;
+  background: #1d2c3e;
+  position: relative;
+  transition-duration: 0.25s;
+}
+.content .header .toggle-switch__control {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  box-shadow: 0px 0px 5px 1px;
+  transition-duration: 0.25s;
+}
+.content .header .toggle-switch__control--toggled {
+  left: 45px;
+  background: #49d073;
+}
 .content__wrapper {
   width: 100%;
   display: flex;
@@ -85,11 +108,8 @@
 .content__wrapper .text-wrapper {
   width: 66%;
   height: 200px;
-  overflow-y: scroll;
+  overflow: hidden;
   outline: none;
-}
-.content__wrapper .text-wrapper::-webkit-scrollbar {
-  display: none;
 }
 .content__wrapper .text-wrapper .word {
   display: inline-block;
@@ -149,16 +169,17 @@
   text-align: center;
 }
 .content__wrapper .keyboard__key {
-  width: 4.3%;
+  width: 4.6%;
   height: 40px;
-  margin: 1px;
-  border: 1px solid #000;
+  margin: 2px;
+  border: 2px solid #000;
   border-radius: 5px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   position: relative;
+  color: #fff;
 }
 .content__wrapper .keyboard__key__char {
   font-size: 22px;
@@ -167,7 +188,7 @@
   position: absolute;
   left: 5px;
   top: 0;
-  font-size: 18px;
+  font-size: 16px;
 }
 .content__wrapper .keyboard__key--extrawide {
   width: 35%;
@@ -176,20 +197,20 @@
   box-shadow: 0px -1px 8px 4px #e2b428;
 }
 .content__wrapper .keyboard__key--blue {
-  background: #66d9ff;
+  border-color: #66d9ff;
 }
 .content__wrapper .keyboard__key--green {
-  background: #49d073;
+  border-color: #49d073;
 }
 .content__wrapper .keyboard__key--rose {
-  background: #f9b9d5;
+  border-color: #f9b9d5;
 }
 .content__wrapper .keyboard__key--orange {
-  background: #ffc07e;
+  border-color: #ffc07e;
 }
 .content__wrapper .keyboard__key--yellow {
-  background: #ffef7e;
+  border-color: #ffef7e;
 }
 .content__wrapper .keyboard__key--gray {
-  background: #afacb1;
+  border-color: #afacb1;
 }

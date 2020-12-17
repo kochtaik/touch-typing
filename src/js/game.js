@@ -37,6 +37,7 @@ class Game {
     this.startCountdown();
     const { startBtn, textElem } = this.elements;
     startBtn.disabled = true;
+    Keyboard.highlightKey(textElem.textContent[0]);
     if (this.mode === 'exact') {
       const textLength = textElem.textContent.length;
       this.allowedMistakesNum = Math.ceil(textLength / 100);
@@ -45,6 +46,8 @@ class Game {
     document.addEventListener('keypress', this.handleKeypress);
     document.addEventListener('keydown', this.handleBackspace);
     this.createCaretElem();
+    this.scrollText();
+
   }
 
   handleKeypress(e) {
@@ -100,8 +103,8 @@ class Game {
     if (wordElement == null) return;
 
     const wordToCompare = wordElement.textContent;
-    const charToCompare = wordToCompare[this.charInputIndex];
 
+    const charToCompare = wordToCompare[this.charInputIndex];
     if (enteredChar === 'Backspace') {
       this.changeIndexes('decrement');
       this.removeHighlight();
@@ -113,6 +116,7 @@ class Game {
       this.updateTextElem(true);
       this.changeIndexes('increment');
     }
+    this.toggleKeyboardHighlight();
     this.scrollText();
     this.moveCaret();
   }
@@ -136,7 +140,6 @@ class Game {
 
   updateTextElem(isCorrect) {
     const { charInputIndex } = this;
-    if (charInputIndex > 0) Keyboard.unhighlightKey();
     this.highlightChar(charInputIndex, isCorrect);
   }
 
@@ -160,6 +163,16 @@ class Game {
       char.classList.remove('word__char--char-mistaked');
       this.updateMistakes(true);
     }
+  }
+
+  toggleKeyboardHighlight() {
+    const wordElem = document.querySelector(`#word${this.wordInputIndex}`);
+    if (wordElem == null) return;
+    let wordToCompare = wordElem.textContent;
+
+    Keyboard.unhighlightKey();
+    wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
+    Keyboard.highlightKey(wordToCompare[this.charInputIndex]);
   }
 
   changeIndexes(direction) {
@@ -190,8 +203,8 @@ class Game {
       this.charInputIndex -= 1;
       this.inputLength -= 1;
     }
-    console.log('char after:', this.charInputIndex);
-    console.log('word after:', this.wordInputIndex);
+    // console.log('char after:', this.charInputIndex);
+    // console.log('word after:', this.wordInputIndex);
   }
 
   scrollText() {
@@ -272,7 +285,7 @@ class Game {
     modal.insertAdjacentElement('beforeend', message);
     modal.classList.add('modal--active');
     blackout.classList.add('blackout--active');
-    document.body.classList.add('body--prevent-scroll');
+    document.body.classList.add('prevent-scroll');
     blackout.addEventListener('click', this.hideBlackout);
   }
 

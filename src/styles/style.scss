@@ -54,6 +54,32 @@ $yellow-correct: linear-gradient(
     justify-content: space-between;
     width: 66%;
     color: #000;
+
+    .toggle-switch {
+      width: 70px;
+      height: 30px;
+      border-radius: 30px;
+      background: #1d2c3e;
+      position: relative;
+      transition-duration: 0.25s;
+
+      &__control {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        box-shadow: 0px 0px 5px 1px;
+        transition-duration: 0.25s;
+
+        &--toggled {
+          left: 45px;
+          background: $light-green;
+        }
+      }
+    }
   }
 
   &__wrapper {
@@ -66,12 +92,8 @@ $yellow-correct: linear-gradient(
     .text-wrapper {
       width: 66%;
       height: 200px;
-      overflow-y: scroll;
+      overflow: hidden;
       outline: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
 
       .word {
         display: inline-block;
@@ -130,16 +152,17 @@ $yellow-correct: linear-gradient(
       height: auto;
       text-align: center;
       &__key {
-        width: 4.3%;
+        width: 4.6%;
         height: 40px;
-        margin: 1px;
-        border: 1px solid #000;
+        margin: 2px;
+        border: 2px solid #000;
         border-radius: 5px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         user-select: none;
         position: relative;
+        color: #fff;
 
         &__char {
           font-size: 22px;
@@ -149,7 +172,7 @@ $yellow-correct: linear-gradient(
           position: absolute;
           left: 5px;
           top: 0;
-          font-size: 18px;
+          font-size: 16px;
         }
 
         &--extrawide {
@@ -161,27 +184,27 @@ $yellow-correct: linear-gradient(
         }
 
         &--blue {
-          background: $light-blue;
+          border-color: $light-blue;
         }
 
         &--green {
-          background: $light-green;
+          border-color: $light-green;
         }
 
         &--rose {
-          background: $light-rose;
+          border-color: $light-rose;
         }
 
         &--orange {
-          background: $light-orange;
+          border-color: $light-orange;
         }
 
         &--yellow {
-          background: $light-yellow;
+          border-color: $light-yellow;
         }
 
         &--gray {
-          background: $light-gray;
+          border-color: $light-gray;
         }
       }
     }

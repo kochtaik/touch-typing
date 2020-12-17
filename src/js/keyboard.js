@@ -87,7 +87,7 @@ class Keyboard {
           break;
 
         case 'space':
-          characterWrapper.textContent = ' ';
+          characterWrapper.textContent = '\u00A0';
           key.classList.add('keyboard__key--extrawide');
           key.dataset.type = 'space';
           break;

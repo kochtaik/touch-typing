@@ -9,9 +9,9 @@ class Facade {
     this.lang = lang;
     this.mode = mode;
     this.elements = {
-      modeList: document.querySelector('#mode'),
+      modeSwitcher: document.querySelector('#mode'),
       startBtn: document.querySelector('#start'),
-      languageList: document.querySelector('#language'),
+      languageSwitcher: document.querySelector('#language'),
       inputField: document.querySelector('#textinput'),
     };
   }
@@ -38,17 +38,26 @@ class Facade {
   }
 
   configureInterface() {
-    const { startBtn, languageList, modeList } = this.elements;
+    const { startBtn, languageSwitcher, modeSwitcher } = this.elements;
+    languageSwitcher.addEventListener('click', () => {
+      const control = languageSwitcher.querySelector('.toggle-switch__control');
+      control.classList.toggle('toggle-switch__control--toggled');
+      if (languageSwitcher.dataset.lang === 'en') {
+        languageSwitcher.dataset.lang = 'ru';
+      } else languageSwitcher.dataset.lang = 'en';
+    });
+    modeSwitcher.addEventListener('click', () => {
+      const control = modeSwitcher.querySelector('.toggle-switch__control');
+      control.classList.toggle('toggle-switch__control--toggled');
+      if (modeSwitcher.dataset.mode === 'default') {
+        modeSwitcher.dataset.mode = 'exact';
+      } else modeSwitcher.dataset.mode = 'default';
+    });
     startBtn.addEventListener('click', () => {
-      let { selectedIndex } = languageList.options;
-      const selectedLanguage = languageList.options[selectedIndex].value;
-      selectedIndex = modeList.options.selectedIndex;
-      const selectedMode = modeList.options[selectedIndex].value;
-      if (selectedLanguage === '') alert('Select language!');
-      else {
-        const facade = new Facade(selectedLanguage, selectedMode);
-        facade.init();
-      }
+      const { lang } = languageSwitcher.dataset;
+      const { mode } = modeSwitcher.dataset;
+      const facade = new Facade(lang, mode);
+      facade.init();
     });
   }
 }
