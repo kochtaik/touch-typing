@@ -1,12 +1,16 @@
+import Game from './game';
+
 class Generator {
   constructor(lang) {
     this.lang = lang;
     this.elements = {
       textField: document.querySelector('#text'),
+      modeSwitcher: document.querySelector('#mode'),
+      languageSwitcher: document.querySelector('#language'),
     };
   }
 
-  pullText() {
+  initializeGame() {
     const url = this.lang === 'en' ? 'https://litipsum.com/api/1/json'
       : 'https://fish-text.ru/get?&type=sentence&number=2';
     const { textField } = this.elements;
@@ -16,12 +20,20 @@ class Generator {
         if (this.lang === 'en') {
           const totalText = Generator.parseText(obj.text);
           if (totalText.length < 50) {
-            this.pullText();
-          } else this.formText(Generator.parseText(obj.text));
-        } else this.formText(Generator.replacer('Привет всем'));
-      }).catch((e) => {
+            this.initializeGame();
+          } return this.formText(Generator.parseText(obj.text));
+        } return this.formText(Generator.replacer(obj.text));
+      })
+      .then(() => {
+        const text = document.querySelector('#text').textContent;
+        const { languageSwitcher } = this.elements;
+        const chosenLang = languageSwitcher.dataset.lang;
+        const game = new Game(text, chosenLang);
+        game.start();
+      })
+      .catch((err) => {
         textField.textContent = 'Oops! Something went wrong:( Retry later';
-        throw new Error('Error in asynchronous function:', e);
+        throw new Error('Error in asynchronous function:', err.message);
       });
   }
 

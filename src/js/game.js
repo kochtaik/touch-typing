@@ -4,10 +4,10 @@
 import Keyboard from './keyboard';
 
 class Game {
-  constructor(text, lang, mode) {
+  constructor(text, lang) {
     this.text = text.trim().split('\u00A0');
     this.lang = lang;
-    this.mode = mode;
+    this.mode = document.querySelector('#mode').dataset.mode;
     this.mistakes = {
       total: 0,
       corrected: 0,
@@ -23,6 +23,7 @@ class Game {
     this.handleKeypress = this.handleKeypress.bind(this);
     this.hideBlackout = this.hideBlackout.bind(this);
     this.elements = {
+      modeSwitcher: document.querySelector('#mode'),
       modal: document.querySelector('#end-game'),
       blackout: document.querySelector('#blackout'),
       startBtn: document.querySelector('#start'),
@@ -34,23 +35,26 @@ class Game {
   }
 
   start() {
-    this.startCountdown();
     const { startBtn, textElem } = this.elements;
+    const disabledBtnColor = '#728193';
     startBtn.disabled = true;
+    startBtn.style.background = disabledBtnColor;
     Keyboard.highlightKey(textElem.textContent[0]);
     if (this.mode === 'exact') {
       const textLength = textElem.textContent.length;
       this.allowedMistakesNum = Math.ceil(textLength / 100);
-      this.setMistakesDisplaying();
     }
+    this.setMistakesDisplaying();
+    this.timerStarted = true;
     document.addEventListener('keypress', this.handleKeypress);
     document.addEventListener('keydown', this.handleBackspace);
     this.createCaretElem();
     this.scrollText();
-
   }
 
   handleKeypress(e) {
+    if (this.timerStarted) this.startCountdown();
+    this.timerStarted = false;
     e.preventDefault();
     const enteredChar = e.key;
     this.validateInput(enteredChar);
@@ -273,16 +277,22 @@ class Game {
   endGame() {
     const {
       modal,
-      startBtn, blackout,
+      startBtn,
+      blackout,
+      mistakes,
+      time,
+      speed,
     } = this.elements;
+    const activeBtnColor = '#1d2c3e';
     startBtn.disabled = false;
+    startBtn.style.background = activeBtnColor;
+    mistakes.textContent = '0';
+    time.textContent = '00:00';
+    speed.textContent = '0';
     document.removeEventListener('keypress', this.handleKeypress);
     document.removeEventListener('keydown', this.handleBackspace);
-    const title = document.createElement('h1');
-    title.textContent = 'Game over!';
-    modal.insertAdjacentElement('beforeend', title);
     const message = this.createEndGameMessage();
-    modal.insertAdjacentElement('beforeend', message);
+    document.querySelector('#modal-text').textContent = message;
     modal.classList.add('modal--active');
     blackout.classList.add('blackout--active');
     document.body.classList.add('prevent-scroll');
@@ -295,9 +305,7 @@ class Game {
     CPM in ${parsedTime}, having committed ${this.mistakes.total} mistakes.`;
     const unsuccsessMessage = `You commited more than ${this.allowedMistakesNum} allowed mistakes.
     You have typed the text at the speed ${this.speed} CPM in ${parsedTime}.`;
-    const description = document.createElement('p');
-    if (this.gameStatus === 'failed') description.textContent = unsuccsessMessage;
-    else description.textContent = successMessage;
+    const description = this.gameStatus === 'failed' ? unsuccsessMessage : successMessage;
     return description;
   }
 
@@ -305,7 +313,7 @@ class Game {
     const { blackout, modal } = this.elements;
     blackout.classList.remove('blackout--active');
     modal.classList.remove('modal--active');
-    modal.innerHTML = '';
+    modal.querySelector('p').textContent = '';
     document.body.classList.remove('body--prevent-scroll');
     blackout.removeEventListener('click', this.hideBlackout);
   }

@@ -11,64 +11,35 @@
 <body>
   <main class="content">
     <header class="content__header header">
-      <button class="header__start-btn" id="start">Start game</button>
+      <button class="header__start-btn" id="start">Restart</button>
+      Russian
       <div class="header__toggle-switch toggle-switch" data-lang="en" id="language">
         <div class="toggle-switch__control"></div>
       </div>
+      Exact mode
       <div class="header__toggle-switch toggle-switch" data-mode="default" id="mode">
         <div class="toggle-switch__control"></div>
       </div>
     </header>
+    <div class="content__game-data game-data">
+      <div class="game-data__speed">Speed: <span id="speed">0</span></div>
+      <div class="game-data__mistakes">Mistakes: <span id="mistakes">0</span></div>
+      <div class="game-data__time">Time: <span id="time">00:00</span></div>
+    </div>
     <div class="content__wrapper wrapper">
       <section class="wrapper__text-wrapper text-wrapper">
-        <div id="text" class="text-wrapper__content" tabindex="0">
-          Here will be your text...
-        </div>  
+        <div id="text" class="text-wrapper__content" tabindex="0"></div>  
       </section>
-      <div class="wrapper__game-data game-data">
-        <div class="game-data__speed">Speed: <span id="speed">0</span></div>
-        <div class="game-data__mistakes">Mistakes: <span id="mistakes">0</span></div>
-        <div class="game-data__time">Time: <span id="time"></span></div>
-      </div>
       <section class="wrapper__keyboard  keyboard" id="keyboard">
         <!-- сюда генерируется клавиатура -->
       </section>
     </div>
     <footer class="content__footer footer"></footer>
   </main>
-  <div class="modal" id="stats">
-    <section class="modal__header header">
-      <h2 class="header__title">Your best games</h2>
-      <div class="header__stats-options">
-        Select mode:
-        <select name="" id="mode">
-          <option value="default">Default</option>
-          <option value="exact">Exact</option>
-        </select>
-        Select lang:
-        <select name="" id="modalLanguage">
-          <option selected value="ru">Russian</option>
-          <option value="en">English</option>
-        </select>
-        Sort by:
-        <select name="" id="sort">
-          <option selected value="speed">Speed</option>
-          <option value="time">Time</option>
-          <option value="mistakes">Mistakes</option>
-        </select>
-      </div>
-    </section>
-    <section class="modal__table-header table-header">
-      <span class="table-header__game-number">#</span>
-      <span class="table-header__game-speed">Speed, CPM</span>
-      <span class="table-header__game-time">Time</span>
-      <span class="table-header__game-mistakes">Mistakes</span>
-    </section>
-    <section class="modal__table-body table-body" id="results">
-      <!-- here will be stats -->
-    </section>
+  <div class="modal" id="end-game">
+    <h1 class="modal__header">Game Over!</h1>
+    <p class="modal__text" id="modal-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad veritatis quia veniam necessitatibus sunt cupiditate illo praesentium explicabo nostrum? Molestias dolor dolore corrupti repellat adipisci accusantium temporibus, quasi incidunt nemo!</p>
   </div>
-  <div class="modal" id="end-game"></div>
   <div class="blackout" id="blackout"></div>
 </body>
 <script src="public/bundle.js"></script>

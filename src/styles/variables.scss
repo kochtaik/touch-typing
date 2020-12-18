@@ -1,0 +1,17 @@
+$main-gray: rgb(148, 149, 153);
+$main-yellow: rgb(240, 217, 86);
+$main-font: "Exo 2", sans-serif;
+$light-blue: rgb(102, 217, 255);
+$dark-blue: rgb(29, 44, 62);
+$light-green: rgb(73, 208, 115);
+$light-rose: rgb(249, 185, 213);
+$light-orange: rgb(255, 192, 126);
+$light-yellow: rgb(255, 239, 126);
+$light-gray: rgb(175, 172, 177);
+$red-mistaked: rgb(215, 91, 91);
+$yellow-correct: linear-gradient(
+  to right,
+  $main-yellow,
+  $main-yellow 50%,
+  white 50%
+);
