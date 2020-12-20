@@ -153,10 +153,10 @@ class Keyboard {
 
     const keyValue = key.dataset.type;
     const keyGroups = Object.values(fingerZones);
-    for (const group of keyGroups) {
+    keyGroups.forEach((group) => {
       const { values, className } = group;
       if (values.includes(keyValue)) key.classList.add(className);
-    }
+    });
   }
 
   static highlightKey(character) {

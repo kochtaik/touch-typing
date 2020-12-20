@@ -1,5 +1,3 @@
-/* eslint-disable no-alert */
-/* eslint-disable no-console */
 import Keyboard from './keyboard';
 import Generator from './text-data';
 

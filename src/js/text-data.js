@@ -69,9 +69,8 @@ class Generator {
       '“': '"',
       '”': '"',
       '’': '\'',
-      // eslint-disable-next-line quote-props
-      'ё': 'е',
       ' ': '\u00A0',
+      ё: 'е',
     };
     let correctStr = str;
     const pairs = Object.entries(symbolsToReplace);

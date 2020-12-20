@@ -1,6 +1,3 @@
-// добавить блокировку всяких дейсвтий, если произошла ошибка в фетчинге
-// исправить баг с отображением ошибок после точного режима
-/* eslint-disable no-console */
 import Keyboard from './keyboard';
 
 class Game {
@@ -89,9 +86,7 @@ class Game {
   }
 
   watchGameStatus() {
-    if (this.isGameOver()) {
-      this.endGame();
-    }
+    if (this.isGameOver()) this.endGame();
   }
 
   getCurrentChar() {
@@ -182,8 +177,6 @@ class Game {
   changeIndexes(direction) {
     let wordToCompare = document.querySelector(`#word${this.wordInputIndex}`).textContent;
     const charToCompare = wordToCompare[this.charInputIndex];
-    // console.log('char before:', this.charInputIndex);
-    // console.log('word before:', this.wordInputIndex);
     if (charToCompare === wordToCompare[wordToCompare.length - 1]) {
       if (direction === 'increment') {
         this.wordInputIndex += 1;
@@ -207,8 +200,6 @@ class Game {
       this.charInputIndex -= 1;
       this.inputLength -= 1;
     }
-    // console.log('char after:', this.charInputIndex);
-    // console.log('word after:', this.wordInputIndex);
   }
 
   scrollText() {
