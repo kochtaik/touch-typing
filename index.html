@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/public/bundle.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@200;300;400;500;700;800&display=swap" rel="stylesheet">
+  <title>Document</title>
+</head>
+<body>
+  <main class="content">
+    <header class="content__header header">
+      <button class="header__start-btn" id="start">Restart</button>
+      Russian
+      <div class="header__toggle-switch toggle-switch" data-lang="en" id="language">
+        <div class="toggle-switch__control"></div>
+      </div>
+      Exact mode
+      <div class="header__toggle-switch toggle-switch" data-mode="default" id="mode">
+        <div class="toggle-switch__control"></div>
+      </div>
+    </header>
+    <div class="content__game-data game-data">
+      <div class="game-data__speed">Speed: <span id="speed">0</span></div>
+      <div class="game-data__mistakes">Mistakes: <span id="mistakes">0</span></div>
+      <div class="game-data__time">Time: <span id="time">00:00</span></div>
+    </div>
+    <div class="content__wrapper wrapper">
+      <section class="wrapper__text-wrapper text-wrapper">
+        <div id="text" class="text-wrapper__content" tabindex="0"></div>  
+      </section>
+      <section class="wrapper__keyboard  keyboard" id="keyboard">
+        <!-- сюда генерируется клавиатура -->
+      </section>
+    </div>
+    <footer class="content__footer footer"></footer>
+  </main>
+  <div class="modal" id="end-game">
+    <h1 class="modal__header">Game Over!</h1>
+    <p class="modal__text" id="modal-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad veritatis quia veniam necessitatibus sunt cupiditate illo praesentium explicabo nostrum? Molestias dolor dolore corrupti repellat adipisci accusantium temporibus, quasi incidunt nemo!</p>
+  </div>
+  <div class="blackout" id="blackout"></div>
+</body>
+<script src="public/bundle.js"></script>
+</html>

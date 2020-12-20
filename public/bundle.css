@@ -1,0 +1,220 @@
+.prevent-scroll {
+  overflow-y: hidden;
+}
+
+.blackout {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: rgba(221, 221, 221, 0.527);
+  transition: all 0.25s;
+  opacity: 0;
+  pointer-events: none;
+}
+.blackout--active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  width: 50%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: all 0.25s;
+  text-align: center;
+  border: 2px solid #000;
+  padding: 5px;
+  background: #fff;
+  z-index: 20;
+  font-family: "Exo 2", sans-serif;
+}
+.modal__text {
+  font-size: 20px;
+}
+.modal--active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.content {
+  max-width: 1280px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #949599;
+  font-family: "Exo 2", sans-serif;
+  color: #fff;
+}
+.content .header {
+  display: flex;
+  align-self: flex-end;
+  justify-content: flex-end;
+  margin: 10px;
+  width: 66%;
+  color: #fff;
+}
+.content .header .toggle-switch {
+  width: 70px;
+  height: 30px;
+  margin: 0 10px;
+  border-radius: 30px;
+  background: #1d2c3e;
+  position: relative;
+  transition-duration: 0.25s;
+  cursor: pointer;
+}
+.content .header .toggle-switch__control {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  box-shadow: 0px 0px 5px 1px;
+  transition-duration: 0.25s;
+}
+.content .header .toggle-switch__control--toggled {
+  left: 45px;
+  background: #49d073;
+}
+.content .header__start-btn {
+  width: 100px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  background: #1d2c3e;
+  cursor: pointer;
+}
+.content .game-data {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 25px;
+}
+.content .wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.content .wrapper__text-wrapper {
+  width: 66%;
+  height: 200px;
+  overflow: hidden;
+  outline: none;
+}
+.content .wrapper__text-wrapper .word {
+  display: inline-block;
+}
+.content .wrapper__text-wrapper .word__char {
+  background: linear-gradient(to right, #f0d956, #f0d956 50%, white 50%);
+  display: inline-block;
+  overflow: hidden;
+  color: #949599;
+  background-size: 0 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 100%;
+  background-position: 100%;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  font-size: 32px;
+}
+.content .wrapper__text-wrapper .word__char--char-correct {
+  background-position: 0 100%;
+}
+.content .wrapper__text-wrapper .word__char--char-mistaked {
+  background: none;
+  color: #d75b5b;
+  -webkit-text-fill-color: unset;
+}
+.content .wrapper__text-wrapper .caret {
+  opacity: 0;
+  position: absolute;
+  width: 2px;
+  height: 32px;
+  background: #000;
+  transition-duration: 0.3s;
+  animation: twinkle 1s infinite;
+}
+.content .wrapper__text-wrapper .caret--active {
+  animation: none;
+  opacity: 1;
+}
+@keyframes twinkle {
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.content .wrapper .keyboard {
+  width: 100%;
+  height: auto;
+  margin-top: 50px;
+  text-align: center;
+}
+.content .wrapper .keyboard__key {
+  width: 4.6%;
+  height: 40px;
+  margin: 2px;
+  border: 2px solid #000;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  position: relative;
+  color: #fff;
+}
+.content .wrapper .keyboard__key__char {
+  font-size: 22px;
+}
+.content .wrapper .keyboard__key__super {
+  position: absolute;
+  left: 5px;
+  top: 0;
+  font-size: 16px;
+}
+.content .wrapper .keyboard__key--extrawide {
+  width: 35%;
+}
+.content .wrapper .keyboard__key--next {
+  box-shadow: 0px -1px 8px 4px #e2b428;
+}
+.content .wrapper .keyboard__key--blue {
+  border-color: #66d9ff;
+}
+.content .wrapper .keyboard__key--green {
+  border-color: #49d073;
+}
+.content .wrapper .keyboard__key--rose {
+  border-color: #f9b9d5;
+}
+.content .wrapper .keyboard__key--orange {
+  border-color: #ffc07e;
+}
+.content .wrapper .keyboard__key--yellow {
+  border-color: #ffef7e;
+}
+.content .wrapper .keyboard__key--gray {
+  border-color: #afacb1;
+}
